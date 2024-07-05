@@ -1,10 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory
 
 from game_entties import Game, Player, get_uuid
 
 app = Flask(__name__)
 
 games={}
+
+@app.route('/javascript/<path:filename>')
+def custom_static(filename):
+    return send_from_directory('javascript', filename)
+
 @app.route('/')
 def home():
     return redirect(url_for('index'))
