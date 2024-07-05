@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
-
+from flask_socketio import SocketIO
 from game_entties import Game, Player, get_uuid
 
 app = Flask(__name__)
-
+socketio = SocketIO(app)
 games={}
 
 @app.route('/javascript/<path:filename>')
@@ -38,5 +38,8 @@ def board():
     response = make_response(render_template('board.html', player_uuid=player_uuid, game_code=game_code))
     return response
 
+
+
 if __name__ == '__main__':
     app.run()
+
