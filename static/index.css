@@ -1,0 +1,36 @@
+*{
+    background-color: #303030;
+}
+
+.container{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 1%);
+    text-align: center;
+}
+
+.container h1{
+    color: white;
+    background-color: black;
+    padding: 4% 10px;
+    font-weight: bolder;
+    text-transform: uppercase;
+    font-size: 50px;   
+    border-radius: 0px;
+    box-shadow: 6px 6px 15px -4px rgb(0,0,0,0.75);
+    margin-top: 25px;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.button{
+    background: 3030130;
+    padding: 10px 15px;
+    color: aliceblue;
+    font-size:x-large;
+}
+
+.box{
+    font-size: 50rem;
+}
