@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
 
 from game_entties import Game, Player, get_uuid
 
@@ -25,10 +25,11 @@ def create_game():
     game.add_player(player)
 
     response = make_response(redirect(url_for('board')))
-    response.set_cookie('game_code', game.code)
-    response.set_cookie('player_uuid', player.player_uuid)
+    response.set_cookie('game_code', game.code, samesite='None', secure=True)
+    response.set_cookie('player_uuid', player.player_uuid, samesite='None', secure=True)
 
-    return response
+    redirect_url = url_for('board')
+    return jsonify({'redirect': redirect_url})
 
 @app.route('/board')
 def board():
