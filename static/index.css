@@ -18,7 +18,7 @@
     text-transform: uppercase;
     font-size: 50px;   
     border-radius: 0px;
-    box-shadow: 6px 6px 15px -4px rgb(0,0,0,0.75);
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
     margin-top: 25px;
     text-decoration: none;
     transition: 0.4s;
@@ -31,6 +31,15 @@
     font-size:x-large;
 }
 
+
+
+
+
+
+.button:hover{
+background: red ;
+color: #fff
+}
 .box{
-    font-size: 50rem;
+    background-color: rgba(red, green, blue, alpha);
 }
