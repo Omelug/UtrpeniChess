@@ -6,21 +6,25 @@ app = Flask(__name__)
 
 games={}
 @app.route('/')
-def index():
+def home():
     return redirect(url_for('index'))
 @app.route('/index')
 def index():
     return render_template('index.html')
 
-@app.route('/create_game', method='POST')
+@app.route('/create_game', methods=['POST'])
 def create_game():
+
     game = Game()
-    response = make_response(render_template('index.html'))
-    response.set_cookie('game_code', game.code)
     player = Player(starter=True)
+    color = game.add_player(player)
+
+    response = make_response(render_template('board.html', color=color, game_code=game.code))
+    response.set_cookie('game_code', game.code)
     response.set_cookie('player_id', player.player_uuid)
-    game.add_player(player)
+
     return response
+
 
 
 if __name__ == '__main__':

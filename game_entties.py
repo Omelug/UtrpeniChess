@@ -16,8 +16,13 @@ class Player():
         self.starter = starter
 
 class Game():
-    players = set()
     def __init__(self):
+        self.players = set()
         self.code = new_game_code()
-    def add_player(self,player):
-        players.add(player)
+
+    def get_color(self):
+
+    def add_player(self, player):
+        self.players.add(player)
+        player.color = self.get_color()
+        return random.choice(['red', 'blue'])
