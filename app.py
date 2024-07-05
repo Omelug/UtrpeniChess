@@ -17,15 +17,20 @@ def create_game():
 
     game = Game()
     player = Player(starter=True)
-    color = game.add_player(player)
+    game.add_player(player)
 
-    response = make_response(render_template('board.html', color=color, game_code=game.code))
+    response = make_response(redirect(url_for('board')))
     response.set_cookie('game_code', game.code)
-    response.set_cookie('player_id', player.player_uuid)
+    response.set_cookie('player_uuid', player.player_uuid)
 
     return response
 
-
+@app.route('/board')
+def board():
+    game_code = request.cookies.get('game_code')
+    player_uuid = request.cookies.get('player_uuid')
+    response = make_response(render_template('board.html', player_uuid=player_uuid, game_code=game_code))
+    return response
 
 if __name__ == '__main__':
     app.run()
