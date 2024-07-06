@@ -15,6 +15,13 @@ class Player():
         self.player_uuid = get_uuid()
         self.starter = starter
 
+games = {} #crete page for list of games
+
+def get_game(game_code):
+    global games
+    #return games.get(game_code, None) #FIXME
+    return Game()
+
 class Game():
     def __init__(self):
         self.players = set()
@@ -29,3 +36,11 @@ class Game():
     def add_player(self, player):
         self.players.add(player)
         player.color = self.get_color()
+
+    @staticmethod #TODO znicit
+    def get_chat():
+        chat  = {'Chat': [
+            {'black': "ahoj"},
+            {'white': "no nazdar"}
+        ]}
+        return chat

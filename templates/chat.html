@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+            socket.on('message_received', function(data) {
+                var messagesDiv = document.getElementById('Chat');
+                messagesDiv.innerHTML += '<p>' + data.message + '</p>';
+            });
+        });
+    </script>
+</head>
+<body>
+
+ <div id="Chat">
+     {{chat}}
+     <br>
+    {% for message in chat['Chat'] %}
+        {% for sender, text in message.items() %}
+            <p>{{ sender }}: {{ text }}</p>
+        {% endfor %}
+    {% endfor %}
+ </div>
+ <label for="messageInput">Enter msg:</label>
+ <input id="messageInput">
+<button id="send_msg">SEND message</button>
+
+<script>
+    document.getElementById('send_msg').addEventListener('click', function() {
+            var messageInput = document.getElementById('messageInput');
+            var message = messageInput.value;
+            sendMessage(message);
+            messageInput.value = ''
+    });
+
+    function sendMessage(message) {
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({message: message}),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+</script>
+</body>
+</html>

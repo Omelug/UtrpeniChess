@@ -1,0 +1,3 @@
+TODO:
+
+Chat na nadávání

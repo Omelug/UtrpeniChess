@@ -1,10 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify, \
+    Blueprint
 from flask_socketio import SocketIO
-from game_entties import Game, Player, get_uuid
+from game_entties import Game, Player
+from test import test_blueprint, init_app
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-games={}
+
+init_app(app)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/javascript/<path:filename>')
 def custom_static(filename):
@@ -31,11 +38,17 @@ def create_game():
     redirect_url = url_for('board')
     return jsonify({'redirect': redirect_url})
 
+def load_game():
+    pass
 @app.route('/board')
 def board():
     game_code = request.cookies.get('game_code')
     player_uuid = request.cookies.get('player_uuid')
-    response = make_response(render_template('board.html', player_uuid=player_uuid, game_code=game_code))
+
+    response = make_response(
+        render_template('board.html', player_uuid=player_uuid, game_code=game_code)
+    )
+
     return response
 
 
