@@ -8,10 +8,27 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>{{player_uuid}}</h1>
-    <h1>{{game_code}}</h1>
+<div class="container-gameboard">
+    <script> 
+        document.addEventListener("DOMContentLoaded", function(){
+        const element = document.createElement("div");
+        element.style.backgroundColor = "#769656"
+        element.style.width = "500px";
+        element.style.height = "500px";
+      
+        document.getElementsByTagName("div")[0].appendChild(element);
+    });
+    </script>
 </div>
+
+
+<div class="uidutils">
+    <h1 id="player">{{ player_uuid }}</h1>
+    <h1 id="game">{{ game_code }}</h1>
+
+</div>
+
+
 
 </body>
 

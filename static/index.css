@@ -1,6 +1,10 @@
+
+/*/The main page color/*/
 *{
     background-color: #303030;
 }
+
+/*/The main page buttons/*/
 
 .container{
     position: absolute;
@@ -24,19 +28,43 @@
     transition: 0.4s;
 }
 
-.button{
+#createGame{
+    font-weight: bolder;
+    font-size: 35px;  
     background: 3030130;
     padding: 10px 15px;
+    outline-color: #303030;
     color: aliceblue;
     font-size:x-large;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+}
+.container2{
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translate(-50%, 1%);
+    text-align: center;
 }
 
-
-
-
-
+#enjoyGame{
+    top: 70%;
+    font-weight: bolder;
+    outline-width: 700;
+    font-size: 35px;  
+    background: 3030130;
+    padding: 10px 15px;
+    outline-color: #303030;
+    color: aliceblue;
+    font-size:x-large;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+   
+   
+}
 
 .button:hover{
+
 background: red ;
 color: #fff
 }
@@ -48,6 +76,58 @@ color: #fff
 }
 
 .box-context{
-    height: 250px;
-    width: 500px;
+   /*/ height: 250px;
+    width: 500px;/*/
 }
+
+
+/*/
+Gameboard
+/*/
+
+.container-gameboard{
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 1%);
+    text-align: center;
+}
+
+.uidutils{
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, 1%);
+    text-align: center;
+}
+
+#player {
+    height: 25px;
+    background: rgb(44, 44, 44);
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+    color: white;
+    font-weight: bolder;
+    font-size: 20px;  
+
+}
+
+#game {
+    height: 25px;
+   
+    background: rgb(44, 44, 44);
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+    color: white;
+    font-weight: bolder;
+    font-size: 20px;  
+
+}
+
+
+
+
+
+
+
+
