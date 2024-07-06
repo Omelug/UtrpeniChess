@@ -1,3 +1,30 @@
+/*/Pro někoho kdo nikdy neviděl CSS - Vysvětlení/*/
+
+/*/.container{ je název class/*/
+/*/position:absolute;                   jedná se o pozici, nemám lepší definici XD /*/
+/*/text-align: center;                  jedná se o určení pozice textu vuči místu (v centur , z prava..)/*/
+/*/top: 20%;                            jedná se o určení souřadnice ve vertikální ose (osa Y) na stránce/*/
+/*/left: 50%;                           jedná se o určení souřadnice v horizontální ose (osa X) na stránce/*/
+/*/transform: translate(-50%, 1%);      jedná se o věc u které nemám tušení co to dělá nějak to posouvá ale jinak nevím/*/
+
+
+/*/#name{                               je název id dané položky/*/
+/*/visibility: visible;                 určí zda je věc viditelná či nikoliv/*/
+
+/*/background-color: ;                  jedná se o barvu pozadí textu/*/ /*/lze použít i background:/*/    
+/*/border: 2px #c70303 solid;           jedná se o nastavení outline/*/ /*/nemusí být ale barva outline pak bílá bude/*/
+/*/border-radius:20px                   jedná se o zakulacení hran [V Microsoftu na to ted mají nějakou úchylku]/*/
+/*/box-shadow: px px px px rgba(,,,);   jedná se o stín obklopující subjekt/*/
+
+/*/color: white;                        jedná se o barvu textu/*/
+/*/text-decoration: none;               jedná se o vylepšení textu (podtrhnutí...)/*/
+/*/font-size: 25px;                     jedná se o velikost fontu (textu)/*/
+/*/font-weight: bolder;                 jedná se o šířku fontu (tlouštku)/*/
+/*/text-transform: uppercase;           Řídí účinky velkých písmen textu/*/
+
+/*/padding: 4% 10px;                    jedná se o něco jako "hitbox" + zvětšení boxu/*/
+/*/margin-top: 25px;                    jedná se o pousun v pozici y zase?/*/
+/*/transition: 0.4s;                    jedná /*/
 
 /*/The main page color/*/
 *{
@@ -8,83 +35,93 @@
 
 /*/Container for #creategame/*/
 .container{
-    position: absolute;
+    text-align: center;
+    position:absolute;
     top: 20%;
     left: 50%;
     transform: translate(-50%, 1%);
-    text-align: center;
     
 }
+/*/MainScreen text - Utrpení-chess/*/
+#mainText{
+    visibility: visible;
 
-.container h1{
-    color: white;
     background-color: black;
-    padding: 4% 10px;
-    font-weight: bolder;
-    text-transform: uppercase;
-    font-size: 50px;   
+    border: 2px #000000 solid;
     border-radius: 0px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-    margin-top: 25px;
+
+    color: white;
     text-decoration: none;
+    font-size: 50px;  
+    font-weight: bolder;
+    text-transform: uppercase;
+
+    padding: 4% 10px;
+    margin-top: 25px;
     transition: 0.4s;
     
 }
-
-
-
+/*/Vytvořit [Button]/*/
 #gamemenu{
-    font-weight: bolder;
-    font-size: 35px;  
-    background: 3030130;
-    padding: 10px 15px;
-    outline-color: #303030;
-    color: aliceblue;
-    font-size:x-large;
+    visibility: visible;
+
+    background-color: #303030;
+    border: 2px #000000 solid;
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+
+    
+    color: aliceblue;
+    text-decoration: none;
+    font-size: 25px;  
+    font-weight: bolder;
+    text-transform: none;
+
+    padding: 10px 15px;
+    outline-color: #ff0000;
 }
 
 /*/Container for #enjoyGame/*/
 .container2{
-position: absolute;
-    top: 110%;
+    text-align: center;
+    position: absolute;
+    top: 43%;
     left: 50%;
     transform: translate(-50%, 1%);
-    text-align: center;
 }
 
+/*/Připojit se [Button]/*/
 #enjoyGame{
-    top: 70%;
-    font-weight: bolder;
-    outline-width: 700;
-    font-size: 35px;  
-    background: 3030130;
-    padding: 10px 15px;
-    outline-color: #303030;
-    color: aliceblue;
-    font-size:x-large;
+    visibility: visible;
+
+    background-color: #303030;
+    border: 2px #000000 solid;
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-    visibility: visible;
+
+    color: aliceblue;
+    font-size: 25px;  
+    font-weight: bolder;
+    
+    padding: 10px 15px;
 }
 
 /*/Container for Horse img/*/
-
 .container-img{
-    position: absolute;
-    top: 500px;
-    transform: translate(-50%, 1%);
     text-align: center;
     align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 700px;
+    transform: translate(-50%, 1%);
 }
-
-
+/*/Tomuto rozumím jen já a Bůh [Když to čteš tak už nejspíš jen Bůh]/*/
 .openn{
     visibility: hidden;
 }
 .open-menu{
-visibility: visible;
+    visibility: visible;
 }
 
 .openn img{
@@ -95,32 +132,30 @@ visibility: visible;
 }
 
 
-
 .container-setting-menu{
-    position: absolute;
-    top: 120%;
-    left: auto;
-    transform: translate(-50%, 1%);
     text-align: center;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, 1%);
 }
 
 #createGame{
-    font-weight: bolder;
-    font-size: 35px;  
-    background: 3030130;
-    padding: 10px 15px;
-    outline-color: #303030;
-    color: aliceblue;
-    font-size:x-large;
+
+    background-color:#303030;
+    border: 2px #000000 solid;
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+
+    color: aliceblue;
+    font-weight: bolder;
+    font-size: 25px;  
+
+    padding: 10px 15px;
+
 }
 
-.button:hover{
-background: red ;
-color: #fff
-}
-
+/*/
 .container-setting-choose-map{
     position: absolute;
     top: 120%;
@@ -140,13 +175,36 @@ color: #fff
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
 }
+/*/
+/*/
+.dropdown{
+  min-width: 15em;
+  position: relative;
+     margin: 2em;
+}
 
+.dropdown * {
+    box-sizing: border-box;
+}
 
+.select{
+    background: 3030130;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px #c70303 solid;
+    border-radius: 0.5em;
+    padding: 1em;
+    cursor: pointer;
+    transition: 0.3;
+}
 
+.select-clicked{
+    border: 2px #26489a solid
+}
 
-
-
-
+/*/
 
 
 /*/
@@ -154,19 +212,19 @@ Gameboard
 /*/
 
 .container-gameboard{
+    text-align: center;
     position: absolute;
     top: 20%;
     left: 50%;
     transform: translate(-50%, 1%);
-    text-align: center;
 }
 
 .uidutils{
+    text-align: center;
     position: absolute;
     top: 90%;
     left: 50%;
     transform: translate(-50%, 1%);
-    text-align: center;
 }
 
 #player {
