@@ -3,41 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../static/index.css">
-        <title>Šachy pro více hráčů</title>
-        <script src="/javascript/game.js" defer></script>
+    <link rel="stylesheet" href="../static/index.css">
+    <title>Šachy pro více hráčů</title>
+    <script src="/javascript/game.js" defer></script>
 </head>
 <body>
 <div class="wrapper">
-<form action="">
-
-</form>
-
+    <form action="">
+    </form>
 </div>
 
 <div class="container">
-    <h1>Utrpení-Chess</h1>
-    <button id = "createGame" onclick="openmenu()"> Vytvořit hru </button>
-    <div class="container2"> <button id = "enjoyGame"> Připojit se </button></div>
-    <div class="openn" id = "openn">
-        <img src="../pictures/Horse.png">
-
+    <h1 id = "mainText">Utrpení-Chess</h1>
+    <button id="gamemenu" onclick="clickmenu()"> Vytvořit hru </button>
+    <div class="container2"> <button id="enjoyGame"> Připojit se </button></div>
+  
+    <div class="openn" id="openn">
+        <div class="container5">
+        <img src="../static/pictures/Horse.png">
+    </div>
+        <script src="/javascript/openscript.js"></script>
+        <div class="container4"> 
+            <button id="createGame"> Hrát </button>
+        </div>
     </div>
 </div>
- 
 
+<script src="/javascript/remove.js"></script>
 
-<script>
-let openn = document.getElementById("openn")
-function openmenu(){
-    openn.classList.add("open-menu");
-}
-</script>
-
-
-
-</div>
 
 </body>
-
 </html>
