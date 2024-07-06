@@ -24,17 +24,6 @@ def remove_game(game_code):
     global games
     games.remove(game_code)
 
-class Player:
-    def __init__(self, starter=False, name=None):
-        self.player_uuid = get_uuid()
-        self.name = name
-
-    def load_player(self):
-        return {
-            'name': self.name,
-            'player_uuid': self.player_uuid
-        }
-
 
 class Map():
     def __init__(self):
@@ -55,33 +44,50 @@ class Map():
         source_path = f"./static/maps/{map_name}.json"
         destination_dir = f"./games/{code}"
         os.makedirs(destination_dir, exist_ok=True)
-
         game_map_path = os.path.join(destination_dir, "map.json")
-        game_path = os.path.join(destination_dir, "game.json")
 
         shutil.copy2(source_path, game_map_path)
+        return map_name
+
+
+def save_map(game_code, map_json):
+    with open(f"./games/{game_code}/map.json", 'w') as f:
+        json.dump(map_json, f)
+
+def load_map(game_code):
+    with open(f"./games/{game_code}/map.json", 'r') as f:
+        return json.load(f)
+
+class Chat:
+    @staticmethod
+    def init_chat(game_code):
+        game_path = os.path.join(f"./games/{game_code}", "chat.json")
+        with open(game_path, "w+") as f:
+            json.dump([{'Server':{"msg":"START"}}], f)
+
+def load_chat(self,):
+    with open(f"./games/{self.code}/chat.json", 'r') as f:
+        return json.load(f)
+
+class Game:
+    def __init__(self, code=None):
+        self.code = code
+
+    @staticmethod
+    def init_game(game_code, map_name):
+        game_path = os.path.join(f"./games/{game_code}", "game.json")
         with open(game_path, "w+") as f:
             json.dump({'map_name': map_name}, f)
-
-    def load_map(self):
-        players= {player.color: player.load_player() for player in self.players}
-        return {self.map_name:{players}}
-
-
-
-class Game():
-    def __init__(self):
-        self.code = None
 
     def create_new(self, data):
         if data is None:
             data = {}
         self.code = new_game_code()
-        Map.init_map(self.code, data.get('map_name', 'chess_classic'))
+        map_name=data.get('map_name', 'chess_classic')
 
-    def add_player(self, player, color=None):
-        self.players.add(player)
-        player.color = self.get_color(color)
+        Map.init_map(self.code, map_name)
+        Game.init_game(self.code, map_name=map_name)
+        Chat.init_chat(self.code)
 
     @staticmethod #TODO znicit
     def get_chat():
@@ -91,19 +97,38 @@ class Game():
         ]}
         return chat
 
-    def get_json(self):
-        return {
-            'Map': self.load_map(),
-            'Chat': self.get_chat()
-        }
+    def save_game(self, json_object):
+        with open(f"./games/{self.code}/game.json", 'w') as f:
+           json.dump(json_object, f)
 
-    def save_game(self):
-        with open(f"/games/{self.code}/.json", 'w') as f:
-            map_json = self.load_map()
-            chat = self.chat.get_json()
-            json.dump(self.get_json(), f)
+    def load_game(self):
+        with open(f"./games/{self.code}/game.json", 'r') as f:
+            return json.load(f)
 
-    def load_game(self, game):
-        with open(f"/games/{game.code}.json", 'w') as f:
-            all = json.load(f)
+    def connect_player(self, player_uuid, color='white', name=None):
+        jso = load_map(self.code)
 
+        colors = jso['status']['players'].keys()
+
+        pref_color = False
+        selected = None
+        for col in colors:
+            uuid = jso['status']['players'][col]['uuid']
+            if uuid == player_uuid:
+                selected = jso['status']['players'][col]
+                break
+            if uuid is None:
+                if pref_color is False:
+                    if col == color:
+                        pref_color = True
+                    selected = jso['status']['players'][col]
+
+        if selected is not None:
+            selected['uuid'] = player_uuid
+            if name is not None:
+                selected['name'] = name
+            save_map(self.code, jso)
+            return True
+
+        print("Game is full")
+        return False

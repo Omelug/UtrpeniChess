@@ -19,8 +19,6 @@ class Horse(Figure):
     def valid_move(self) -> bool:
         pass
 
-
-
 class Bishop(Figure):
     pass
 
