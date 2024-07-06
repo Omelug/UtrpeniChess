@@ -6,7 +6,7 @@
 
 /*/The main page buttons/*/
 
-/*/Container for #creategame,openn/*/
+/*/Container for #creategame/*/
 .container{
     position: absolute;
     top: 20%;
@@ -69,30 +69,24 @@ position: absolute;
     visibility: visible;
 }
 
-.container5{
+/*/Container for Horse img/*/
+
+.container-img{
     position: absolute;
-    top: 10%;
+    top: 500px;
     transform: translate(-50%, 1%);
     text-align: center;
     align-items: center;
-    
 }
+
+
 .openn{
-    width: 400px;
-    border-radius: 6px;
-    position: absolute;
-    top: 0;
-    transform: translate(-50%, -50% ),scale(0.1);
-    text-align: center;
-    padding: 0 30px 30px;
-    transition: trasform 0.4s, top 0.4s;
     visibility: hidden;
 }
 .open-menu{
-text-align: center;   
 visibility: visible;
-transform: translate(-50%, -50% ),scale(1);
 }
+
 .openn img{
     width: 300px;
     margin-top: -50px;
@@ -100,14 +94,16 @@ transform: translate(-50%, -50% ),scale(1);
     box-shadow: none ;
 }
 
-.container4{
+
+
+.container-setting-menu{
     position: absolute;
-    top: 20%;
-    left: 50%;
+    top: 120%;
+    left: auto;
     transform: translate(-50%, 1%);
     text-align: center;
-    
 }
+
 #createGame{
     font-weight: bolder;
     font-size: 35px;  
@@ -162,7 +158,6 @@ Gameboard
 
 #game {
     height: 25px;
-   
     background: rgb(44, 44, 44);
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);

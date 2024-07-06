@@ -12,17 +12,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 });
-
-/*/function clickmenu() {
-    hidemenus();
-    openmenu();
-}
-
-function hidemenus() {
-    var element = document.getElementById("container");
-    element.remove
-}
-
-function openmenu() {
-    openn.classList.add("open-menu");
-}/*/
