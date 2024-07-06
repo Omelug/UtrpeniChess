@@ -31,12 +31,11 @@ def create_game():
     player = Player(starter=True)
     game.add_player(player)
 
-    response = make_response(redirect(url_for('board')))
+    response = make_response(jsonify({'redirect': url_for('board')}))
     response.set_cookie('game_code', game.code, samesite='None', secure=True)
     response.set_cookie('player_uuid', player.player_uuid, samesite='None', secure=True)
 
-    redirect_url = url_for('board')
-    return jsonify({'redirect': redirect_url})
+    return response
 
 def load_game():
     pass
