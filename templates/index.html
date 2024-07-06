@@ -17,17 +17,27 @@
 
 <div class="container">
     <h1>Utrpení-Chess</h1>
-    <button id = "createGame"> Vytvořit hru </button>
-    <div class="container2">
-    <button id = "enjoyGame"> Připojit se </button>
+    <button id = "createGame" onclick="openmenu()"> Vytvořit hru </button>
+    <div class="container2"> <button id = "enjoyGame"> Připojit se </button></div>
+    <div class="openn" id = "openn">
+        <img src="../pictures/Horse.png">
+
     </div>
-    <script> </script>
+</div>
+ 
+
+
+<script>
+let openn = document.getElementById("openn")
+function openmenu(){
+    openn.classList.add("open-menu");
+}
+</script>
+
+
 
 </div>
- <div class="box">
-    <div class="box-context"></div>
 
-</div>
 </body>
 
 </html>
