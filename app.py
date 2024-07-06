@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify, \
     Blueprint
 from flask_socketio import SocketIO
-from game_entties import Game, Player
+from game_entities import Game, Player
 from test import test_blueprint, init_app
 
 app = Flask(__name__)
@@ -26,14 +26,16 @@ def index():
 
 @app.route('/create_game', methods=['POST'])
 def create_game():
-
+    create_data = request.json
     game = Game()
-    player = Player(starter=True)
-    game.add_player(player)
+    game.create_new(create_data)
+    player = Player(name=create_data.get('player_name'))
+    game.add_player(player, color=create_data.get('color'))
 
     response = make_response(jsonify({'redirect': url_for('board')}))
     response.set_cookie('game_code', game.code, samesite='None', secure=True)
-    response.set_cookie('player_uuid', player.player_uuid, samesite='None', secure=True)
+    if request.cookies.get('player_uuid') is None:
+        response.set_cookie('player_uuid', player.player_uuid, samesite='None', secure=True)
 
     return response
 

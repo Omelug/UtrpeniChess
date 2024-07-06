@@ -1,8 +1,6 @@
 from flask_socketio import SocketIO
 from flask import make_response, render_template, Blueprint, request, jsonify
 
-from game_entties import get_game
-
 socketio = SocketIO()
 test_blueprint = Blueprint('test', __name__)
 random_int = 0
@@ -25,12 +23,13 @@ def handle_message():
     socketio.emit('message_received', {'message': message})
     return jsonify({'status': 'Message sent'})
 
+"""
 @test_blueprint.route('/chat')
 def chat_test():
     game = get_game(game_code = request.cookies.get('game_code'))
     chat = game.get_chat()
     return make_response(render_template('chat.html', chat=chat))
-
+"""
 @test_blueprint.route('/random_test')
 def random_test():
     handle_update_random_int()
