@@ -116,13 +116,37 @@ visibility: visible;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
 }
 
-
-
-
 .button:hover{
 background: red ;
 color: #fff
 }
+
+.container-setting-choose-map{
+    position: absolute;
+    top: 120%;
+    left: auto;
+    transform: translate(-50%, 1%);
+    text-align: center;
+}
+
+#chooseMap{
+    font-weight: bolder;
+    font-size: 35px;  
+    background: 3030130;
+    padding: 10px 15px;
+    outline-color: #303030;
+    color: aliceblue;
+    font-size:x-large;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+}
+
+
+
+
+
+
+
 
 
 /*/
