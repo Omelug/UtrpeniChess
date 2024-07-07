@@ -40,7 +40,6 @@ def player_connect(game, create_data):
 
     added = game.connect_player(
         uuid, name=create_data.get('player_name'),
-        color=create_data.get('color')
     )
 
     if added:

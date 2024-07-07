@@ -16,19 +16,25 @@
     </form>
 </div>
 
-<div class="container">
+<div>
+    <div class="container">
     <h1 id = "mainText">Utrpení-Chess</h1>
     <button id="gamemenu"> Vytvořit hru </button>
     <script src="/javascript/remove.js"></script>
 </div>
-    
-<div class="container2"> 
-    <button id="enjoyGame"> Připojit se </button>
+
+<div class="connectDiv">
+    <label for="playerName">Name:</label><br>
+    <input id="playerName"><br>
+    <label for="gameCode">Kód hry:</label><br>
+    <input id="gameCode" maxlength="9"><br>
+    <button id="connectGameBtn">Připojit se</button>
+</div>
 </div>
   
     <div class="openn" id="openn">
         <div class="container-img">
-        <img src="../static/pictures/Horse.png">
+        <img src="../static/pictures/Horse.png" alt="horse">
            <script src="/javascript/openscript.js"></script>
         </div>
         <div class="container-setting-menu"> 
@@ -45,7 +51,8 @@
                 <option value="Chybý">S3</option>
                 <option value="Eror404">S4</option>
                 </select>
-              </div>
+            </div>
+    </div>
     
 
 
