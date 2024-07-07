@@ -1,17 +1,44 @@
 
-<h1>Chat</h1>
+<style>
+    #Chat{
+        border: 1px solid #487a3c;
+        padding: 10px;
+        margin: 10px 0;
+    }
+    .msgP{
+        color: white;
+    }
+
+    #sendDiv {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .message-container label,
+    .message-container input,
+    .message-container button {
+        margin: 0;
+    }
+    #messageInput{
+        border: none;
+    }
+    #send_msg{
+
+    }
+</style>
+
 <div id="Chat">
-     {{chat}}
-     <br>
     {% for message in chat['Chat'] %}
         {% for sender, text in message.items() %}
-            <p>{{ sender }}: {{ text }}</p>
+            <p class="msgP"><b>{{ sender }}:</b> {{ text }}</p>
         {% endfor %}
     {% endfor %}
+
+    <div id="sendDiv">
+        <input type="text" id="messageInput">
+        <button type="button" id="send_msg">Send!</button>
+    </div>
 </div>
-<label for="messageInput">Enter msg:</label>
-<input id="messageInput">
-<button id="send_msg">SEND message</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
