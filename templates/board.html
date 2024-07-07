@@ -7,9 +7,119 @@
     <link rel="stylesheet" href="../static/board.css ">
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <title>Board</title>
-    <script>
-    function loadChat() {
-        fetch('/chat')
+
+</head>
+<body>
+<div class="mainDiv">
+    <div class="board_info">
+        <p id="player">{{player_uuid}}</p>
+        <p id="game">{{game_code}}</p>
+    </div>
+
+    <div class="container-gameboard">
+        <div id="chessboard">
+
+        </div>
+    </div>
+
+    <div id="chatContainer"></div>
+
+</div>
+<script>
+        let gameMap = {};
+        const chessboard = document.getElementById('chessboard');
+
+        async function fetchInitialMap() {
+            try {
+                const response = await fetch('/get_map');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                gameMap = await response.json();
+                renderChessboard(gameMap);
+            } catch (error) {
+                console.error('Error fetching initial game map:', error);
+            }
+        }
+        fetchInitialMap();
+
+        function renderChessboard(data) {
+        chessboard.innerHTML = '';
+        console.log('Render:', gameMap);
+
+        const boardSize = data.start.size;
+        const cellSize = 50;
+
+        const chessboardWidth = boardSize * cellSize;
+
+        chessboard.style.width = `${chessboardWidth}px`;
+        chessboard.style.height = `${chessboardWidth}px`;
+        chessboard.style.gridTemplateColumns = `repeat(${boardSize}, ${cellSize}px)`;
+        chessboard.style.gridTemplateRows = `repeat(${boardSize}, ${cellSize}px)`;
+
+        for (let row = 0; row < boardSize; row++) {
+            for (let col = 0; col < boardSize; col++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+
+                if ((row + col) % 2 === 0) {
+                    cell.classList.add('light');
+                } else {
+                    cell.classList.add('dark');
+                }
+
+                cell.style.width = `${cellSize}px`;
+                cell.style.height = `${cellSize}px`;
+
+                const piece = findPieceAtPosition(data, row, col);
+                if (piece) {
+                    /*const pieceDiv = document.createElement('div');
+                    pieceDiv.textContent = getPieceSymbol(piece.type);
+                    pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
+                    cell.appendChild(pieceDiv);*/
+                }
+
+                chessboard.appendChild(cell);
+            }
+        }
+    }
+
+    function findPieceAtPosition(data, row, col) {
+        for (const player of Object.values(data.status.players)) {
+            for (const pieces of Object.values(player.figures)) {
+                for (const piece of pieces) {
+                    const [pieceRow, pieceCol] = piece.position;
+                    if (pieceRow === row && pieceCol === col) {
+                        return { type: Object.keys(pieces)[0], color: player === data.status.players.white ? 'white' : 'black' };
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    function getPieceSymbol(type) {
+        // Implement your logic to return symbols (e.g., ♟ for pawn, ♚ for king)
+        switch (type) {
+            case 'pawn':
+                return '♟';
+            case 'tower':
+                return '♜';
+            case 'bishop':
+                return '♝';
+            case 'horse':
+                return '♞';
+            case 'queen':
+                return '♛';
+            case 'king':
+                return '♚';
+            default:
+                return '';
+        }
+    }
+
+        function loadChat() {
+            fetch('/chat')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('chatContainer').innerHTML = data;
@@ -22,21 +132,6 @@
         }
         document.addEventListener('DOMContentLoaded', loadChat);
     </script>
-</head>
-<body>
-</body>
-<div class="mainDiv">
-    <div class="board_info">
-        <p id="player">{{player_uuid}}</p>
-        <p id="game">{{game_code}}</p>
-    </div>
-
-    <div class="container-gameboard"></div>
-
-    <div id="chatContainer"></div>
-
-</div>
-<body>
 
 </body>
 </html>

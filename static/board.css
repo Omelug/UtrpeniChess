@@ -36,8 +36,6 @@ body {
 }
 
 .container-gameboard{
-    width: 500px;
-    height: 500px;
     background: #769656
 }
 
@@ -48,4 +46,25 @@ body {
     color: #f6ecec;
     font-weight: bolder;
     font-size: 15px;
+}
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell.dark {
+    background-color: #769656; /* Dark square color */
+}
+
+.cell.light {
+    background-color: #eeeed2; /* Light square color */
 }

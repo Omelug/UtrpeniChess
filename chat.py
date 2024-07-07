@@ -45,4 +45,4 @@ def turn():
 @chat_blueprint.route('/get_map')
 def get_map():
     game = Game(code = request.cookies.get('game_code'))
-    return make_response(jsonify(load('map',game.code)))
+    return jsonify(load('map',game.code))
