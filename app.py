@@ -1,10 +1,11 @@
 import os.path
 
-from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify, \
-    Blueprint
+from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
 from flask_socketio import SocketIO
+
+from chat import init_app
 from game_entities import Game, get_uuid
-from chat import chat_blueprint, init_app
+
 
 app = Flask(__name__)
 socketio = SocketIO(app)

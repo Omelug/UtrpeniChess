@@ -10,8 +10,6 @@
     "turn": "white",
     "players": {
       "white": {
-        "uuid": null,
-        "name": "Mr. White",
         "view": 1,
         "figures": {
           "pawn": [
@@ -45,8 +43,6 @@
         }
       },
       "black": {
-        "uuid": null,
-        "name": "Mr. Black",
         "view": 3,
         "figures": {
           "pawn": [

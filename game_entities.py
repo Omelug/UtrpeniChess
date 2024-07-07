@@ -49,14 +49,13 @@ class Map():
         shutil.copy2(source_path, game_map_path)
         return map_name
 
-
-def save_map(game_code, map_json):
-    with open(f"./games/{game_code}/map.json", 'w') as f:
-        json.dump(map_json, f)
-
-def load_map(game_code):
-    with open(f"./games/{game_code}/map.json", 'r') as f:
-        return json.load(f)
+class User:
+    @staticmethod
+    def init_users(game_code, colors):
+        game_path = os.path.join(f"./games/{game_code}", "users.json")
+        with open(game_path, "w+") as f:
+            print(set(colors))
+            json.dump({"colors": list(colors), "players":{}}, f)
 
 class Chat:
     @staticmethod
@@ -67,11 +66,11 @@ class Chat:
 
 
 def get_name(game_code, player_uuid):
-    with open(f"./games/{game_code}/map.json", 'r') as f:
+    with open(f"./games/{game_code}/users.json", 'r') as f:
         jso = json.load(f)
-        for color in jso['status']['players']:
-            if jso['status']['players'][color]['uuid'] == player_uuid:
-                return jso['status']['players'][color]['name']
+        for color in jso['players'].keys():
+            if jso['players'][color]['uuid'] == player_uuid:
+                return jso['players'][color]['name']
     return "Anon"
 
 
@@ -85,8 +84,11 @@ def send_message(game_code,name, msg):
         json.dump(chat_data, chat_file)
         chat_file.truncate()
 
-def load_chat(game_code):
-    with open(f"./games/{game_code}/chat.json", 'r') as f:
+def save(config_name , game_code, map_json):
+    with open(f"./games/{game_code}/{config_name}.json", 'w') as f:
+        json.dump(map_json, f)
+def load(config_name,game_code):
+    with open(f"./games/{game_code}/{config_name}.json", 'r') as f:
         return json.load(f)
 
 class Game:
@@ -109,38 +111,32 @@ class Game:
         Game.init_game(self.code, map_name=map_name)
         Chat.init_chat(self.code)
 
-    def save_game(self, json_object):
-        with open(f"./games/{self.code}/game.json", 'w') as f:
-           json.dump(json_object, f)
+        colors = load('map',self.code)['status']['players'].keys()
+        User.init_users(self.code, colors=colors)
 
-    def load_game(self):
-        with open(f"./games/{self.code}/game.json", 'r') as f:
-            return json.load(f)
 
     def connect_player(self, player_uuid, color='white', name=None):
-        jso = load_map(self.code)
+        jso = load('users',self.code)
 
-        colors = jso['status']['players'].keys()
-
-        pref_color = False
-        selected = None
-        for col in colors:
-            uuid = jso['status']['players'][col]['uuid']
+        for col in jso['players'].keys():
+            uuid = jso['players'][col]['uuid']
             if uuid == player_uuid:
-                selected = jso['status']['players'][col]
-                break
-            if uuid is None:
-                if pref_color is False:
-                    if col == color:
-                        pref_color = True
-                    selected = jso['status']['players'][col]
+                selected = jso['players'][col]
+                break # player already have color
+        else:
+            if len(jso['colors']) == 0:
+                print("Game is full")
+                return False
 
-        if selected is not None:
-            selected['uuid'] = player_uuid
-            if name is not None and name != "":
-                selected['name'] = name
-            save_map(self.code, jso)
-            return True
+            if color in jso['colors']:
+                add_new_color = jso['colors'].remove(color) # give player new color
+            else:
+                add_new_color = jso['colors'].pop(0) # give player pref_color
+            jso['players'][add_new_color] = {'uuid': player_uuid, 'name': "Anon"}
+            selected = jso['players'][add_new_color]
 
-        print("Game is full")
-        return False
+        selected['uuid'] = player_uuid
+        if name is not None and name != "":
+            selected['name'] = name
+        save('users', self.code, jso)
+        return True

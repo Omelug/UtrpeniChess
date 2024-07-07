@@ -67,12 +67,21 @@
         messagesDiv.innerHTML += '<p class="msgP"><b>'+data.name +': </b>' + data.message + '</p>';
         messagesDiv.scrollTop = messagesDiv.scrollHeight
     });
-    document.getElementById('sendMsg').addEventListener('click', function() {
-        let messageInput = document.getElementById('messageInput');
-        const message = messageInput.value;
-        sendMessage(message);
-        messageInput.value = ''
+    document.getElementById('sendMsg').addEventListener('click', sendMessageFromInput);
+    document.getElementById('messageInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            sendMessageFromInput();
+        }
     });
+
+    function sendMessageFromInput() {
+        let messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+        if (message !== '') {
+            sendMessage(message);
+            messageInput.value = '';
+        }
+    }
 
     function sendMessage(message) {
         fetch('/send_message', {method: 'POST',
