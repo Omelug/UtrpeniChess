@@ -5,7 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/index.css ">
     <link rel="stylesheet" href="../static/board.css ">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <title>Board</title>
+    <script>
+    function loadChat() {
+        fetch('/chat')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('chatContainer').innerHTML = data;
+                const scripts = document.getElementById('chatContainer').getElementsByTagName('script');
+                for (let script of scripts) {
+                    eval(script.innerHTML);
+                }
+            })
+            .catch(error => console.error('Error loading chat:', error));
+        }
+        document.addEventListener('DOMContentLoaded', loadChat);
+    </script>
 </head>
 <body>
 </body>
@@ -15,29 +31,12 @@
         <p id="game">{{game_code}}</p>
     </div>
 
-    <div class="container-gameboard">
-    </div>
-    <!-- -->
-    <div id="chatContainer">
-        <div id="chatWindow"></div>
-        <label> {{ name }}:</label>
-        <input type="text" id="messageInput">
-        <button id="sendMessage">Send</button>
-    </div>
+    <div class="container-gameboard"></div>
+
+    <div id="chatContainer"></div>
+
 </div>
 <body>
-<script>
-    function loadChat() {
-        fetch('/chat')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('chatContainer').innerHTML = data;
-            })
-            .catch(error => console.error('Error loading chat:', error));
-        }
-        console.log("Loading chat")
-        document.addEventListener('DOMContentLoaded', loadChat);
-</script>
 
 </body>
 </html>

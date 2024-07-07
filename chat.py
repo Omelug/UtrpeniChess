@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO
 from flask import make_response, render_template, Blueprint, request, jsonify
 
-from game_entities import Game, send_message
+from game_entities import Game, send_message, load_chat, get_name
 
 socketio = SocketIO()
 chat_blueprint = Blueprint('test', __name__)
@@ -15,13 +15,17 @@ def init_app(app):
 def handle_message():
     data = request.json
     message = data.get('message')
-    send_message(request.cookies.get('game_code'), request.cookies.get('player_uuid'),message)
-    socketio.emit('message_received', {'message': message})
+    game_code = request.cookies.get('game_code')
+    name = get_name(game_code, request.cookies.get('player_uuid'))
+    send_message(game_code,name, message)
+    socketio.emit('message_received', {'name': name, 'message': message})
     return jsonify({'status': 'Message sent'})
 
 
 @chat_blueprint.route('/chat')
 def chat_test():
     game = Game(code = request.cookies.get('game_code'))
-    chat = game.get_chat()
+    if not game.code:
+        return "Game code not found in cookies", 400
+    chat = load_chat(game.code)
     return make_response(render_template('chat.html', chat=chat))

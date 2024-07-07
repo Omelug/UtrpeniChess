@@ -65,18 +65,28 @@ class Chat:
         with open(game_path, "w+") as f:
             json.dump([{'Server':{"msg":"START"}}], f)
 
-def send_message(game_code, player_uuid, msg):
+
+def get_name(game_code, player_uuid):
+    with open(f"./games/{game_code}/map.json", 'r') as f:
+        jso = json.load(f)
+        for color in jso['status']['players']:
+            if jso['status']['players'][color]['uuid'] == player_uuid:
+                return jso['status']['players'][color]['name']
+    return "Anon"
+
+
+def send_message(game_code,name, msg):
     chat_file_path = f"./games/{game_code}/chat.json"
     with open(chat_file_path, 'r+') as chat_file:
         chat_data = json.load(chat_file)
-        chat_data.append({player_uuid: {"msg": msg}})
+        chat_data.append({name: {"msg": msg}})
 
         chat_file.seek(0)
         json.dump(chat_data, chat_file)
         chat_file.truncate()
 
-def load_chat(self):
-    with open(f"./games/{self.code}/chat.json", 'r') as f:
+def load_chat(game_code):
+    with open(f"./games/{game_code}/chat.json", 'r') as f:
         return json.load(f)
 
 class Game:
@@ -98,14 +108,6 @@ class Game:
         Map.init_map(self.code, map_name)
         Game.init_game(self.code, map_name=map_name)
         Chat.init_chat(self.code)
-
-    @staticmethod #TODO znicit
-    def get_chat():
-        chat  = {'Chat': [
-            {'black': "ahoj"},
-            {'white': "no nazdar"}
-        ]}
-        return chat
 
     def save_game(self, json_object):
         with open(f"./games/{self.code}/game.json", 'w') as f:
@@ -135,7 +137,7 @@ class Game:
 
         if selected is not None:
             selected['uuid'] = player_uuid
-            if name is not None:
+            if name is not None and name != "":
                 selected['name'] = name
             save_map(self.code, jso)
             return True

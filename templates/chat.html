@@ -1,9 +1,15 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
 <style>
     #Chat{
         border: 1px solid #487a3c;
         padding: 10px;
         margin: 10px 0;
+        font-size: 10px;
     }
     .msgP{
         color: white;
@@ -22,51 +28,65 @@
     #messageInput{
         border: none;
     }
-    #send_msg{
-
+    input[type=text]{
+        border: none;
+        background-color: rgba(76, 133, 113, 0.8);
+    }
+    input:focus {
+        outline: none;
+        border: none;
+        background-color: #6c8f64;
+    }
+    #chatWindow{
+         max-height: 200px;
+         overflow-y: auto;
     }
 </style>
+</head>
 
+<body>
 <div id="Chat">
-    {% for message in chat['Chat'] %}
-        {% for sender, text in message.items() %}
-            <p class="msgP"><b>{{ sender }}:</b> {{ text }}</p>
+    <div id="chatWindow">
+        {% for message in chat %}
+            {% for sender, text in message.items() %}
+                <p class="msgP"><b>{{ sender }}:</b> {{ text['msg'] }}</p>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
 
     <div id="sendDiv">
         <input type="text" id="messageInput">
-        <button type="button" id="send_msg">Send!</button>
+        <button type="button" id="sendMsg">Send!</button>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
-            socket.on('message_received', function(data) {
-                var messagesDiv = document.getElementById('Chat');
-                messagesDiv.innerHTML += '<p>' + data.message + '</p>';
-            });
+    let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    socket.on('message_received', function(data) {
+        let messagesDiv = document.getElementById('chatWindow');
+        messagesDiv.innerHTML += '<p class="msgP"><b>'+data.name +': </b>' + data.message + '</p>';
+        messagesDiv.scrollTop = messagesDiv.scrollHeight
     });
-    document.getElementById('send_msg').addEventListener('click', function() {
-            var messageInput = document.getElementById('messageInput');
-            var message = messageInput.value;
-            sendMessage(message);
-            messageInput.value = ''
+    document.getElementById('sendMsg').addEventListener('click', function() {
+        let messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+        sendMessage(message);
+        messageInput.value = ''
     });
 
     function sendMessage(message) {
-            fetch('/send_message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({message: message}),
-            })
-            .then(response => response.json())
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
+        fetch('/send_message', {method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({message: message}),
+        }).then(response => response.json()).catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    let messagesDiv = document.getElementById('chatWindow');
+    messagesDiv.scrollTop = messagesDiv.scrollHeight
 </script>
+</body>
+</html>
+

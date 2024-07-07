@@ -44,7 +44,7 @@ def player_connect(game, create_data):
 
     if added:
         return response
-    return make_response(jsonify({'redirect': url_for('index')}))
+    return make_response(jsonify({'error': "Game is probably full"}))
 
 @app.route('/create_game', methods=['POST'])
 def create_game():
