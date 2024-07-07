@@ -10,36 +10,30 @@
     <title>Šachy pro více hráčů</title>
     <script src="/javascript/game.js" defer></script>
 </head>
-<body>
-<div class="wrapper">
-    <form action="">
-    </form>
-</div>
+<>
+    <div class="titleDiv">
+        <h1 id ="titleText">Utrpení-Chess</h1>
+        <script src="/javascript/remove.js"></script>
+    </div>
+    <div class="createGameDiv">
+        <button id="gamemenu"> Vytvořit hru </button>
+    </div>
+    <div class="connectDiv">
+        <label for="playerName">Name:</label>
+        <input id="playerName"><br>
+        <label for="gameCode">Kód hry:</label>
+        <input id="gameCode" maxlength="9"><br>
+        <button id="connectGameBtn">Připojit se</button>
+    </div>
 
-<div>
-    <div class="container">
-    <h1 id = "mainText">Utrpení-Chess</h1>
-    <button id="gamemenu"> Vytvořit hru </button>
-    <script src="/javascript/remove.js"></script>
-</div>
-
-<div class="connectDiv">
-    <label for="playerName">Name:</label><br>
-    <input id="playerName"><br>
-    <label for="gameCode">Kód hry:</label><br>
-    <input id="gameCode" maxlength="9"><br>
-    <button id="connectGameBtn">Připojit se</button>
-</div>
-</div>
-  
-    <div class="openn" id="openn">
+    <div class="createGameMenu" id="createGameMenu">
         <div class="container-img">
         <img src="../static/pictures/Horse.png" alt="horse">
            <script src="/javascript/openscript.js"></script>
         </div>
-        <div class="container-setting-menu"> 
+        <div class="container-setting-menu">
             <button id="createGame"> Hrát </button>
-         
+
         </div>
 
         <!--Dropovací menu-->

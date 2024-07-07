@@ -65,7 +65,17 @@ class Chat:
         with open(game_path, "w+") as f:
             json.dump([{'Server':{"msg":"START"}}], f)
 
-def load_chat(self,):
+def send_message(game_code, player_uuid, msg):
+    chat_file_path = f"./games/{game_code}/chat.json"
+    with open(chat_file_path, 'r+') as chat_file:
+        chat_data = json.load(chat_file)
+        chat_data.append({player_uuid: {"msg": msg}})
+
+        chat_file.seek(0)
+        json.dump(chat_data, chat_file)
+        chat_file.truncate()
+
+def load_chat(self):
     with open(f"./games/{self.code}/chat.json", 'r') as f:
         return json.load(f)
 

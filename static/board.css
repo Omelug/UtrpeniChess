@@ -1,0 +1,51 @@
+/*/Gameboard/*/
+
+body {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-gap: 0;
+    margin: 0;
+    background: rgb(44, 44, 44);
+}
+
+.mainDiv {
+    grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#chatContainer {
+    width: 100%;
+    padding: 10px;
+}
+#chatWindow {
+    margin: 0;
+    overflow-y: scroll;
+}
+#messageInput {
+    width: calc(100% - 80px);
+    padding: 10px;
+    margin-right: 10px; /* Optional: Add spacing */
+}
+
+#sendMessage {
+    padding: 0;
+    border: none;
+    width: 80px;
+}
+
+.container-gameboard{
+    width: 500px;
+    height: 500px;
+    background: #769656
+}
+
+#player, #game {
+    height: 25px;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+    color: #f6ecec;
+    font-weight: bolder;
+    font-size: 15px;
+}

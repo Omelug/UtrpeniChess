@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    const button0 = document.getElementById("mainText")
+    const button0 = document.getElementById("titleText")
     const button1 = document.getElementById('gamemenu');
     const button2 = document.getElementById('connectGameBtn');
 

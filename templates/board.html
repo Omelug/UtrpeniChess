@@ -1,35 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="../static/index.css ">
-        <title>Game</title>
+    <link rel="stylesheet" href="../static/index.css ">
+    <link rel="stylesheet" href="../static/board.css ">
+    <title>Board</title>
 </head>
 <body>
+</body>
+<div class="mainDiv">
+    <div class="board_info">
+        <p id="player">{{player_uuid}}</p>
+        <p id="game">{{game_code}}</p>
+    </div>
 
-<div class="container-gameboard">
-    <script> 
-        document.addEventListener("DOMContentLoaded", function(){
-        const element = document.createElement("div");
-        element.style.backgroundColor = "#769656"
-        element.style.width = "500px";
-        element.style.height = "500px";
-      
-        document.getElementsByTagName("div")[0].appendChild(element);
-    });
-    </script>
+    <div class="container-gameboard">
+    </div>
+    <!-- -->
+    <div id="chatContainer">
+        <div id="chatWindow"></div>
+        <label> {{ name }}:</label>
+        <input type="text" id="messageInput">
+        <button id="sendMessage">Send</button>
+    </div>
 </div>
-
-
-<div class="uidutils">
-    <h1 id="player">{{ player_uuid }}</h1>
-    <h1 id="game">{{ game_code }}</h1>
-
-</div>
-
-
+<body>
+<script>
+    function loadChat() {
+        fetch('/chat')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('chatContainer').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading chat:', error));
+        }
+        console.log("Loading chat")
+        document.addEventListener('DOMContentLoaded', loadChat);
+</script>
 
 </body>
-
 </html>

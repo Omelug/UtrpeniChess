@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, make_respo
     Blueprint
 from flask_socketio import SocketIO
 from game_entities import Game, get_uuid
-from test import test_blueprint, init_app
+from chat import chat_blueprint, init_app
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -59,8 +59,8 @@ def connect_to_game():
     create_data = request.json
     conn_gam_code = create_data.get('game_code')
 
-    if not os.path.exists(f"./games/{conn_gam_code}/"):
-        return make_response(jsonify({'Error': "Map not found"}))
+    if not conn_gam_code or not os.path.exists(f"./games/{conn_gam_code}/"):
+        return make_response(jsonify({'error': "Invalid code"}))
     game = Game(conn_gam_code)
     return player_connect(game, create_data)
 

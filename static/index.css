@@ -27,38 +27,31 @@
 /*/transition: 0.4s;                    jedná /*/
 
 /*/The main page color/*/
-*{
+body{
     background-color: #303030;
 }
 
 /*/The main page buttons/*/
 
 /*/Container for #creategame/*/
-.container{
+.titleDiv{
     text-align: center;
-    position:absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, 1%);
-    
+    width: 50%;
+    margin: auto;
 }
 /*/MainScreen text - Utrpení-chess/*/
-#mainText{
-    visibility: visible;
-
+#titleText{
     background-color: black;
     border: 2px #000000 solid;
     border-radius: 0px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
 
     color: white;
-    text-decoration: none;
     font-size: 50px;  
     font-weight: bolder;
     text-transform: uppercase;
 
     padding: 4% 10px;
-    margin-top: 25px;
     transition: 0.4s;
     
 }
@@ -83,14 +76,12 @@
 }
 
 /*/Container for #connectGameBtn/*/
-.connectDiv{
+.connectDiv, .createGameDiv{
     text-align: center;
-    position: absolute;
-    top: 43%;
-    left: 50%;
-    transform: translate(-50%, 1%);
 }
-
+.connectDiv{
+    margin: 20px;
+}
 /*/Připojit se [Button]/*/
 #connectGameBtn{
     visibility: visible;
@@ -101,9 +92,9 @@
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
 
     color: aliceblue;
-    font-size: 25px;  
+    font-size: 25px;
     font-weight: bolder;
-    
+
     padding: 10px 15px;
 }
 
@@ -116,15 +107,16 @@
     top: 60px;
     transform: translate(-50%, 1%);
 }
+
 /*/Tomuto rozumím jen já a Bůh [Když to čteš tak už nejspíš jen Bůh]/*/
-.openn{
+.createGameMenu{
     visibility: hidden;
 }
 .open-menu{
     visibility: visible;
 }
 
-.openn img{
+.createGameMenu img{
     width: 300px;
     margin-top: -50px;
     border-radius: 50%;
@@ -163,50 +155,6 @@
 }
 /*/SelectMap/*/
 .dropdown{
-
-}
-
-
-
-
-/*/Gameboard/*/
-
-
-.container-gameboard{
-    text-align: center;
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, 1%);
-}
-
-.uidutils{
-    text-align: center;
-    position: absolute;
-    top: 90%;
-    left: 50%;
-    transform: translate(-50%, 1%);
-}
-
-#player {
-    height: 25px;
-    background: rgb(44, 44, 44);
-    border-radius: 20px;
-    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-    color: white;
-    font-weight: bolder;
-    font-size: 20px;  
-
-}
-
-#game {
-    height: 25px;
-    background: rgb(44, 44, 44);
-    border-radius: 20px;
-    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-    color: white;
-    font-weight: bolder;
-    font-size: 20px;  
 
 }
 

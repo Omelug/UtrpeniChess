@@ -1,7 +1,7 @@
 const button = document.getElementById('gamemenu');
 
 button.addEventListener('click', function() {
-    openn.classList.add("open-menu");
-    openn.classList.add("panel-menu");
+    createGameMenu.classList.add("open-menu");
+    createGameMenu.classList.add("panel-menu");
 
 });

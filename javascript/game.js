@@ -33,7 +33,12 @@ document.getElementById('connectGameBtn').addEventListener('click', function() {
         }
         throw new Error('Request failed');
     }).then(data => {
-        window.location.href = data.redirect;
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            console.error('Error', data.error);
+        }
+
     }).catch(error => {
         console.log('Error:', error);
     });
