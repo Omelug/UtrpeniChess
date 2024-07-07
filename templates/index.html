@@ -1,3 +1,6 @@
+
+<!--Dávej si pozor na začátek a konec vět <div> </div> atd neoznačuje to program když to máš blbě nebo zbytečně v přesahu-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +18,7 @@
 
 <div class="container">
     <h1 id = "mainText">Utrpení-Chess</h1>
-    <button id="gamemenu" onclick="clickmenu()"> Vytvořit hru </button>
+    <button id="gamemenu"> Vytvořit hru </button>
     <script src="/javascript/remove.js"></script>
 </div>
     
@@ -33,24 +36,18 @@
          
         </div>
 
-        <!--
+        <!--Dropovací menu-->
             <div class="dropdown">
-            <div class="select">
-                <span class="selected"><button id="chooseMap">Map</span>
-                <div class="caret"></div>
-                <ul class="menu">
-                    <li>Classic</li>
-                    <li>Classic1</li>
-                    <li>Classic2</li>
-                    <li>Classic3</li>
-                    <li class="active">Classic</li>
-                </ul>
-                
+                <select class="select-map">
+                <option value="">Select An Option</option>
+                <option value="Classic">S1</option>
+                <option value="Není">S2</option>
+                <option value="Chybý">S3</option>
+                <option value="Eror404">S4</option>
+                </select>
               </div>
-        -->
+    
 
-
-</div>
 
 </body>
 </html>

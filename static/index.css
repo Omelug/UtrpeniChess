@@ -23,7 +23,7 @@
 /*/text-transform: uppercase;           Řídí účinky velkých písmen textu/*/
 
 /*/padding: 4% 10px;                    jedná se o něco jako "hitbox" + zvětšení boxu/*/
-/*/margin-top: 25px;                    jedná se o pousun v pozici y zase?/*/
+/*/margin-top: 25px;                    jedná se o pousun v pozici y zase?/*/ /*/ale tentokrát posun v podkategorii/*/
 /*/transition: 0.4s;                    jedná /*/
 
 /*/The main page color/*/
@@ -113,7 +113,7 @@
     align-items: center;
     position: absolute;
     left: 50%;
-    top: 700px;
+    top: 60px;
     transform: translate(-50%, 1%);
 }
 /*/Tomuto rozumím jen já a Bůh [Když to čteš tak už nejspíš jen Bůh]/*/
@@ -133,15 +133,22 @@
 
 
 .container-setting-menu{
+    border: 5px hsl(0, 0%, 0%) solid;   
+   border-radius: 30%;
+    width: 450px;
+    height: 450px;
+    background-color:#383838;
     text-align: center;
     position: absolute;
     top: 35%;
     left: 50%;
     transform: translate(-50%, 1%);
+    box-shadow: -5px 8px 5px 0px #7FBC69, 5px -5px 5px 0px #8094BC;
 }
 
 #createGame{
-
+    margin-top:8%;
+    width: 330px;
     background-color:#303030;
     border: 2px #000000 solid;
     border-radius: 20px;
@@ -154,62 +161,16 @@
     padding: 10px 15px;
 
 }
-
-/*/
-.container-setting-choose-map{
-    position: absolute;
-    top: 120%;
-    left: auto;
-    transform: translate(-50%, 1%);
-    text-align: center;
-}
-
-#chooseMap{
-    font-weight: bolder;
-    font-size: 35px;  
-    background: 3030130;
-    padding: 10px 15px;
-    outline-color: #303030;
-    color: aliceblue;
-    font-size:x-large;
-    border-radius: 20px;
-    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-}
-/*/
-/*/
+/*/SelectMap/*/
 .dropdown{
-  min-width: 15em;
-  position: relative;
-     margin: 2em;
+
 }
 
-.dropdown * {
-    box-sizing: border-box;
-}
-
-.select{
-    background: 3030130;
-    color: rgb(255, 255, 255);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 2px #c70303 solid;
-    border-radius: 0.5em;
-    padding: 1em;
-    cursor: pointer;
-    transition: 0.3;
-}
-
-.select-clicked{
-    border: 2px #26489a solid
-}
-
-/*/
 
 
-/*/
-Gameboard
-/*/
+
+/*/Gameboard/*/
+
 
 .container-gameboard{
     text-align: center;
