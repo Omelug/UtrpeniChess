@@ -2,6 +2,7 @@
   "start" :
   {
     "name":"chess_classic",
+    "fig_style":"lichess",
     "colors": {"white": "#000000", "black": "#FFFFFF"},
     "load_type": "chess_classic",
     "size": 8

@@ -12,7 +12,7 @@
 <body>
 <div class="mainDiv">
     <div class="board_info">
-        <p id="player">PLayer uuid: {{player_uuid}}</p>
+        <p id="player">Player uuid: {{player_uuid}}</p>
         <div class="game-info-container">
             <p id="game">Game code: {{game_code}}</p>
             <p id="turn">Turn: </p>
@@ -45,6 +45,36 @@
             }
         }
         fetchInitialMap();
+
+        function hexToRgb(hex) {
+            const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+            hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function generateFilterValues(rgb) {
+        const { r, g, b } = rgb;
+        // Calculating the necessary CSS filter values to match the hex color
+        // This requires some experimentation and fine-tuning
+        const brightness = (r + g + b) / 3 / 255;
+        const invert = brightness > 0.5 ? 0 : 1;
+        const sepia = 1;
+        const saturate = 100;
+        const hueRotate = 0;
+        const contrast = 1;
+
+        // Adjusting brightness and contrast to match the target color
+        const adjustedBrightness = 1 + (brightness - 0.5) * 2;
+        const adjustedContrast = 1 + (contrast - 0.5) * 2;
+
+        return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
+    }
 
         function renderChessboard(data) {
         chessboard.innerHTML = '';
@@ -81,8 +111,21 @@
                 console.log('Piece:', piece);
                 if (piece) {
                     const pieceDiv = document.createElement('div');
-                    pieceDiv.textContent = getPieceSymbol(piece.fig_type);
-                    pieceDiv.style.color = data.start.colors[piece.color]
+
+                    pieceDiv.style.width = '100%';
+                    pieceDiv.style.height = '100%';
+                    pieceDiv.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${piece.fig_type}.svg")`;
+                    pieceDiv.style.backgroundSize = 'contain';
+                    pieceDiv.style.backgroundRepeat = 'no-repeat';
+                    pieceDiv.style.backgroundPosition = 'center';
+
+                    const colorHex = data.start.colors[piece.color];
+                    const rgb = hexToRgb(colorHex);
+                    console.log('RGB:', rgb)
+                    const filterValues = generateFilterValues(rgb);
+                    console.log('filterValues:', filterValues)
+
+                    pieceDiv.style.filter = filterValues;
                     cell.appendChild(pieceDiv);
                 }
 
@@ -92,32 +135,12 @@
     }
 
     function findPieceAtPosition(data, row, col) {
-    for (const piece of data.status.figures) {
-        if (piece.x === row && piece.y === col) {
-            return piece;
+        for (const piece of data.status.figures) {
+            if (piece.x === row && piece.y === col) {
+                return piece;
+            }
         }
-    }
-    return null;
-}
-
-    function getPieceSymbol(type) {
-        // Implement your logic to return symbols (e.g., ♟ for pawn, ♚ for king)
-        switch (type) {
-            case 'pawn':
-                return '♟';
-            case 'tower':
-                return '♜';
-            case 'bishop':
-                return '♝';
-            case 'horse':
-                return '♞';
-            case 'queen':
-                return '♛';
-            case 'king':
-                return '♚';
-            default:
-                return '';
-        }
+        return null;
     }
 
         function loadChat() {
