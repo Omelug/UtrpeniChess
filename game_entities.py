@@ -51,11 +51,11 @@ class Map():
 
 class User:
     @staticmethod
-    def init_users(game_code, colors):
+    def init_users(game_code, colors, colors_view):
         game_path = os.path.join(f"./games/{game_code}", "users.json")
         with open(game_path, "w+") as f:
             print(set(colors))
-            json.dump({"colors": list(colors), "players":{}}, f)
+            json.dump({"view": colors_view, "colors": list(colors), "players":{}}, f)
 
 class Chat:
     @staticmethod
@@ -111,8 +111,9 @@ class Game:
         Game.init_game(self.code, map_name=map_name)
         Chat.init_chat(self.code)
 
-        colors = load('map',self.code)['status']['players'].keys()
-        User.init_users(self.code, colors=colors)
+        players = load('map',self.code)['status']['players']
+        colors_view = { key:players[key]['view'] for key in players.keys()}
+        User.init_users(self.code, colors=players.keys(), colors_view=colors_view)
 
 
     def connect_player(self, player_uuid, color='white', name=None):
