@@ -79,12 +79,11 @@
 
                 const piece = findPieceAtPosition(data, row, col);
                 if (piece) {
-                    const pieceDiv = document.createElement('div');
-                    console.log('Piece:', piece) //TODO tohle nefunguje
-                    pieceDiv.textContent = getPieceSymbol(piece.type);
-                    //pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
-                    cell.appendChild(pieceDiv);
-                }
+                const pieceDiv = document.createElement('div');
+                pieceDiv.textContent = getPieceSymbol(piece.type);
+                pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
+                cell.appendChild(pieceDiv);
+            }
 
                 chessboard.appendChild(cell);
             }

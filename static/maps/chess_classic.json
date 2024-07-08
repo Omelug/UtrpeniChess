@@ -11,70 +11,57 @@
     "players": {
       "white": {
         "view": 1,
-        "figures": {
-          "pawn": [
-            {"position": [1,0] },
-            {"position": [1,1] },
-            {"position": [1,2] },
-            {"position": [1,3] },
-            {"position": [1,4] },
-            {"position": [1,5] },
-            {"position": [1,6] },
-            {"position": [1,7] }
-          ],
-          "tower": [
-            {"position": [0,0] },
-            {"position": [0,7] }
-          ],
-          "queen": [
-             {"position": [0,3]}
-          ],
-          "king": [
-            {"position": [0,4]}
-          ],
-          "bishop": [
-            {"position": [0,2] },
-            {"position": [0,5] }
-          ],
-          "horse": [
-            {"position": [0,1] },
-            {"position": [0,6] }
-          ]
-        }
+        "color": "#000000"
       },
       "black": {
         "view": 3,
-        "figures": {
-          "pawn": [
-            {"position": [6,0] },
-            {"position": [6,1] },
-            {"position": [6,2] },
-            {"position": [6,3] },
-            {"position": [6,4] },
-            {"position": [6,5] },
-            {"position": [6,6] },
-            {"position": [6,7] }
-          ],
-          "tower": [
-            {"position": [7,0] },
-            {"position": [7,7] }
-          ],
-          "queen": [
-             {"position": [7,3]}
-          ],
-          "king": [
-            {"position": [7,4]}
-          ],
-          "bishop": [
-            {"position": [7,2] },
-            {"position": [7,5] }
-          ],
-          "horse": [
-            {"position": [7,1] },
-            {"position": [7,6] }
-          ]
-        }
+        "color": "#FFFFFF"
       }
-    }
+    },
+    "figures": [
+        {"x":1,"y":0, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":1, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":2, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":3, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":4, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":5, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":6, "color": "white", "fig_type": "pawn"},
+        {"x":1,"y":7, "color": "white", "fig_type": "pawn"},
+
+        {"x":0,"y":0, "color": "white", "fig_type": "tower"},
+        {"x":0,"y":7, "color": "white", "fig_type": "tower"},
+
+        {"x":0,"y":3, "color": "white", "fig_type": "queen"},
+
+        {"x":0,"y":4, "color": "white", "fig_type": "king"},
+
+        {"x":0,"y":2, "color": "white", "fig_type": "bishop"},
+        {"x":0,"y":5, "color": "white", "fig_type": "bishop"},
+
+        {"x":0,"y":1, "color": "white", "fig_type": "horse"},
+        {"x":0,"y":6, "color": "white", "fig_type": "horse"},
+
+        {"x":6,"y":0, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":1, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":2, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":3, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":4, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":5, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":6, "color": "black", "fig_type": "pawn"},
+        {"x":6,"y":7, "color": "black", "fig_type": "pawn"},
+
+        {"x":7,"y":0, "color": "black", "fig_type": "tower"},
+        {"x":7,"y":7, "color": "black", "fig_type": "tower"},
+
+        {"x":7,"y":3, "color": "black", "fig_type": "queen"},
+
+        {"x":7,"y":4, "color": "black", "fig_type": "king"},
+
+        {"x":7,"y":2, "color": "black", "fig_type": "bishop"},
+        {"x":7,"y":5, "color": "black", "fig_type": "bishop"},
+
+        {"x":7,"y":1, "color": "black", "fig_type": "horse"},
+        {"x":7,"y":6, "color": "black", "fig_type": "horse"}
+    ]
   }
 }
