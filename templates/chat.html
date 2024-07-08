@@ -61,7 +61,7 @@
 </div>
 
 <script>
-    let socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+    let socket = io('http://127.0.0.1:5000');
     socket.on('message_received', function(data) {
         let messagesDiv = document.getElementById('chatWindow');
         messagesDiv.innerHTML += '<p class="msgP"><b>'+data.name +': </b>' + data.message + '</p>';

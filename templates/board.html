@@ -29,59 +29,80 @@
 
 </div>
 <script>
-        let gameMap = {};
-        const chessboard = document.getElementById('chessboard');
-
-        async function fetchInitialMap() {
-            try {
-                const response = await fetch('/get_map');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                gameMap = await response.json();
-                renderChessboard(gameMap);
-            } catch (error) {
-                console.error('Error fetching initial game map:', error);
-            }
-        }
+    document.addEventListener('DOMContentLoaded', function () {
         fetchInitialMap();
+        var socket_io = io('http://127.0.0.1:5000');
+        socket_io.on('turn_move', function (data) {
+            console.log("awdwadaw")
+            transformSvg(data.from.x, data.from.y, data.to.x, data.to.y)
+        })
+    });
 
-        function hexToRgb(hex) {
-            const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-            hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    let gameMap = {};
+    const chessboard = document.getElementById('chessboard');
+    const cellSize = 50;
 
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : null;
+    async function fetchInitialMap() {
+        try {
+            const response = await fetch('/get_map');
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            gameMap = await response.json();
+            renderChessboard(gameMap);
+        } catch (error) {
+            console.error('Error fetching initial game map:', error);
         }
+    }
 
-        function generateFilterValues(rgb) {
-            const { r, g, b } = rgb;
-            // Calculating the necessary CSS filter values to match the hex color
-            // This requires some experimentation and fine-tuning
-            const brightness = (r + g + b) / 3 / 255;
-            const invert = brightness > 0.5 ? 0 : 1;
-            const sepia = 1;
-            const saturate = 100;
-            const hueRotate = 0;
-            const contrast = 1;
+    function hexToRgb(hex) {
+        const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
 
-            // Adjusting brightness and contrast to match the target color
-            const adjustedBrightness = 1 + (brightness - 0.5) * 2;
-            const adjustedContrast = 1 + (contrast - 0.5) * 2;
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
 
-            return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
+    function transformSvg(row, col, newRow, newCol) {
+        const selector = `svg[pos_x="${col}"][pos_y="${row}"]`;
+        const pieceSvg = document.querySelector(selector);
+        pieceSvg.setAttribute('pos_x', col);
+        pieceSvg.setAttribute('pos_y', row);
+
+        if (pieceSvg) {
+            pieceSvg.style.transform = `translate(${newCol * cellSize}px, ${newRow * cellSize}px)`;
+        } else {
+            console.error(`No SVG found at position (${col}, ${row})`);
         }
+    }
 
-        let selectedRow = -1, selectedCol = -1, targetRow = -1, targetCol = -1;
+    function generateFilterValues(rgb) {
+        const { r, g, b } = rgb;
+        // Calculating the necessary CSS filter values to match the hex color
+        // This requires some experimentation and fine-tuning
+        const brightness = (r + g + b) / 3 / 255;
+        const invert = brightness > 0.5 ? 1 : 0;
+        const sepia = 1;
+        const saturate = 100;
+        const hueRotate = 0;
+        const contrast = 1;
 
-        function renderChessboard(data) {
+        // Adjusting brightness and contrast to match the target color
+        const adjustedBrightness = 1 + (brightness - 0.5) * 2;
+        const adjustedContrast = 1 + (contrast - 0.5) * 2;
+
+        return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
+    }
+
+    let selectedRow = -1, selectedCol = -1, targetRow = -1, targetCol = -1;
+
+    function renderChessboard(data) {
         chessboard.innerHTML = '';
         const boardSize = data.start.size;
-        const cellSize = 50;
 
         const chessboardWidth = boardSize * cellSize;
 
@@ -138,6 +159,8 @@
 
                     pieceSvg.style.width = `${cellSize}px`;
                     pieceSvg.style.height = `${cellSize}px`;
+                    pieceSvg.setAttribute('pos_x', col);
+                    pieceSvg.setAttribute('pos_y', row);
                     pieceSvg.style.top ="0";
                     pieceSvg.style.left = "0";
 
@@ -161,45 +184,39 @@
     }
 
     function turn(selectedRow, selectedCol, targetRow, targetCol) {
-    const postData = {
-        from: { x: selectedRow, y: selectedCol },
-        to: { x: targetRow, y: targetCol },
-    };
-    fetch('/turn', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        //TODO  Handle response as needed
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
+        const postData = {
+            from: { x: selectedRow, y: selectedCol },
+            to: { x: targetRow, y: targetCol },
+        };
+        fetch('/turn', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(postData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Turn error:', data.error);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 
     function findPieceAtPosition(data, row, col) {
         return data.status.figures.find(piece => piece.x === row && piece.y === col) || null;
     }
 
-        function loadChat() {
-            fetch('/chat')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('chatContainer').innerHTML = data;
-                const scripts = document.getElementById('chatContainer').getElementsByTagName('script');
-                for (let script of scripts) {
-                    eval(script.innerHTML);
-                }
-            })
-            .catch(error => console.error('Error loading chat:', error));
-        }
-        document.addEventListener('DOMContentLoaded', loadChat);
-    </script>
-
+    function loadChat() {
+        fetch('/chat')
+            .then(response => response.text()).then(data => {
+            document.getElementById('chatContainer').innerHTML = data;
+            const scripts = document.getElementById('chatContainer').getElementsByTagName('script');
+            for (let script of scripts) {eval(script.innerHTML);}})
+        .catch(error => console.error('Error loading chat:', error));
+    }
+    document.addEventListener('DOMContentLoaded', loadChat);
+</script>
 </body>
 </html>

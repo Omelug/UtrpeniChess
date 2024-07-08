@@ -9,8 +9,8 @@ from game_entities import Game, get_uuid
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-
 init_app(app)
+
 
 @app.route('/favicon.ico')
 def favicon():

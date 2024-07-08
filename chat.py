@@ -46,6 +46,8 @@ def turn():
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
 
+    #TODO on board?
+
     #his turn?
     map_jso = load('map',game.code)
     actual_turn = map_jso['status']['turn']
@@ -60,26 +62,27 @@ def turn():
     if figure is None:
         return jsonify({'error': 'Empty space'})
     if actual_turn != figure['color']:
-        return jsonify({'error': 'Not your figure'})
+        return jsonify({'error': f"Not your figure {figure['color']}"})
 
     #attack on his figure?
-    conflict_figure = get_figure(map_jso, tun_from['x'], tun_from['y'])
-    if actual_turn == conflict_figure['color']:
+    conflict_figure = get_figure(map_jso, turn_to['x'], turn_to['y'])
+    if conflict_figure is not None and actual_turn == conflict_figure['color']:
         return jsonify({'error': 'Cant attack on your figure'})
 
     #figure_obj = Figure(figure)
     #if not figure_obj.valid():
     #    return jsonify({'error': 'Invalid move'})
+    # if conflict_figure is not None:
     #TODO figure_obj.conflict(conflict_figure)
 
     colors_turn = users_jso['colors_turn']
     current_index = colors_turn.index(actual_turn)
     next_index = (current_index + 1) % len(colors_turn)
 
-    save('map',game.code, actual_turn)
+    save('map',game.code, map_jso)
     save('users', game.code, users_jso)
     #TODO sent changed
-    socketio.emit('turn', {"success": True,'turn': colors_turn[next_index]})
+    socketio.emit('turn_move', {"from": data.get('from'), "to": data.get('to'),'turn': colors_turn[next_index]})
     return jsonify({'error': 'ok'})
 
 
