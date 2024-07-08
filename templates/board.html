@@ -12,8 +12,11 @@
 <body>
 <div class="mainDiv">
     <div class="board_info">
-        <p id="player">{{player_uuid}}</p>
-        <p id="game">{{game_code}}</p>
+        <p id="player">PLayer uuid: {{player_uuid}}</p>
+        <div class="game-info-container">
+            <p id="game">Game code: {{game_code}}</p>
+            <p id="turn">Turn: </p>
+        </div>
     </div>
 
     <div class="container-gameboard">
@@ -57,6 +60,9 @@
         chessboard.style.gridTemplateColumns = `repeat(${boardSize}, ${cellSize}px)`;
         chessboard.style.gridTemplateRows = `repeat(${boardSize}, ${cellSize}px)`;
 
+        const turnDiv = document.getElementById('turn');
+        turnDiv.textContent = 'Turn: ' + data.status.turn;
+
         for (let row = 0; row < boardSize; row++) {
             for (let col = 0; col < boardSize; col++) {
                 const cell = document.createElement('div');
@@ -73,10 +79,11 @@
 
                 const piece = findPieceAtPosition(data, row, col);
                 if (piece) {
-                    /*const pieceDiv = document.createElement('div');
+                    const pieceDiv = document.createElement('div');
+                    console.log('Piece:', piece) //TODO tohle nefunguje
                     pieceDiv.textContent = getPieceSymbol(piece.type);
-                    pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
-                    cell.appendChild(pieceDiv);*/
+                    //pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
+                    cell.appendChild(pieceDiv);
                 }
 
                 chessboard.appendChild(cell);
@@ -90,7 +97,7 @@
                 for (const piece of pieces) {
                     const [pieceRow, pieceCol] = piece.position;
                     if (pieceRow === row && pieceCol === col) {
-                        return { type: Object.keys(pieces)[0], color: player === data.status.players.white ? 'white' : 'black' };
+                        return { type: Object.keys(pieces)[0]};
                     }
                 }
             }

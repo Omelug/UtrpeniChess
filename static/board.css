@@ -39,13 +39,17 @@ body {
     background: #769656
 }
 
-#player, #game {
+#player, #game , #turn{
     height: 25px;
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
     color: #f6ecec;
     font-weight: bolder;
     font-size: 15px;
+}
+.game-info-container {
+    display: flex;
+    justify-content: space-between;
 }
 #chessboard {
     display: grid;
