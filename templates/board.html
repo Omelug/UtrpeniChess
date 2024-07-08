@@ -162,8 +162,8 @@
 
     function turn(selectedRow, selectedCol, targetRow, targetCol) {
     const postData = {
-        from: { row: selectedRow, col: selectedCol },
-        to: { row: targetRow, col: targetCol },
+        from: { x: selectedRow, y: selectedCol },
+        to: { x: targetRow, y: targetCol },
     };
     fetch('/turn', {
         method: 'POST',

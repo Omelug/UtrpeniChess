@@ -54,8 +54,7 @@ class User:
     def init_users(game_code, colors, colors_view):
         game_path = os.path.join(f"./games/{game_code}", "users.json")
         with open(game_path, "w+") as f:
-            print(set(colors))
-            json.dump({"view": colors_view, "colors": list(colors), "players":{}}, f)
+            json.dump({"view": colors_view, "colors_turn": list(colors),"colors": list(colors), "players":{}}, f)
 
 class Chat:
     @staticmethod
@@ -87,6 +86,7 @@ def send_message(game_code,name, msg):
 def save(config_name , game_code, map_json):
     with open(f"./games/{game_code}/{config_name}.json", 'w') as f:
         json.dump(map_json, f)
+
 def load(config_name,game_code):
     with open(f"./games/{game_code}/{config_name}.json", 'r') as f:
         return json.load(f)
@@ -116,7 +116,7 @@ class Game:
         User.init_users(self.code, colors=players.keys(), colors_view=colors_view)
 
 
-    def connect_player(self, player_uuid, color='white', name=None):
+    def connect_player(self, player_uuid, color=None, name=None):
         jso = load('users',self.code)
 
         for col in jso['players'].keys():
@@ -129,8 +129,8 @@ class Game:
                 print("Game is full")
                 return False
 
-            if color in jso['colors']:
-                add_new_color = jso['colors'].remove(color) # give player new color
+            if color is not None and color in jso['colors']:
+                add_new_color = jso['colors'].remove(color) # give player pref_color
             else:
                 add_new_color = jso['colors'].pop(0) # give player pref_color
             jso['players'][add_new_color] = {'uuid': player_uuid, 'name': "Anon"}
