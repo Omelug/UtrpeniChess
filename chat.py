@@ -38,6 +38,7 @@ def turn():
     turn_to = data.get('to')
     player_uuid = request.cookies.get('player_uuid')
 
+    print('turn', tun_from, turn_to, player_uuid)
     return jsonify({'error': 'Not your turn'})
     #return jsonify({'error': 'Invalid move'})
 

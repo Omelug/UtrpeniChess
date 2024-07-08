@@ -76,6 +76,8 @@
         return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
     }
 
+        [selectedRow, selectedCol, targetRow, targetCol] = [-1, -1, -1, -1];
+
         function renderChessboard(data) {
         chessboard.innerHTML = '';
         console.log('Render:', gameMap);
@@ -129,10 +131,59 @@
                     cell.appendChild(pieceDiv);
                 }
 
+                cell.addEventListener('click', () => {
+                    if (selectedRow === -1 && selectedCol === -1) {
+                        cell.classList.add('selected');
+                        [selectedRow, selectedCol] = [row, col];
+                    } else if (targetRow === -1 && targetCol === -1) {
+                        cell.classList.add('target');
+                        [targetRow, targetCol] = [row, col];
+                        turn(selectedRow, selectedCol, targetRow, targetCol);
+                        [selectedRow, selectedCol, targetRow, targetCol] = [-1, -1, -1, -1];
+
+                    } else {
+                        const previousSelectedCell = document.querySelector('.cell.selected');
+                        const previousTargetCell = document.querySelector('.cell.target');
+                        if (previousSelectedCell) {
+                            previousSelectedCell.classList.remove('selected');
+                        }
+                        if (previousTargetCell) {
+                            previousTargetCell.classList.remove('target');
+                        }
+
+                        cell.classList.add('selected');
+                        selectedRow = row;
+                        selectedCol = col;
+                        targetRow = -1;
+                        targetCol = -1;
+                    }
+                });
+
                 chessboard.appendChild(cell);
             }
         }
     }
+
+    function turn(selectedRow, selectedCol, targetRow, targetCol) {
+    const postData = {
+        from: { row: selectedRow, col: selectedCol },
+        to: { row: targetRow, col: targetCol },
+    };
+    fetch('/turn', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        //TODO  Handle response as needed
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
     function findPieceAtPosition(data, row, col) {
         for (const piece of data.status.figures) {
