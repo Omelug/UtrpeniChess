@@ -38,9 +38,11 @@ def turn():
     turn_to = data.get('to')
     player_uuid = request.cookies.get('player_uuid')
 
+    #TODO if not valid
+    #return jsonify({'error': 'Invalid move'})
+
     print('turn', tun_from, turn_to, player_uuid)
     return jsonify({'error': 'Not your turn'})
-    #return jsonify({'error': 'Invalid move'})
 
 
 @chat_blueprint.route('/get_map')

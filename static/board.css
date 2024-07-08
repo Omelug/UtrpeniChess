@@ -64,14 +64,12 @@ body {
     justify-content: center;
     align-items: center;
 }
-.selected {
-    background-color: green;
-}
+
 
 .cell.dark {
-    background-color: #769656; /* Dark square color */
+    background-color: #769656;
 }
 
 .cell.light {
-    background-color: #eeeed2; /* Light square color */
+    background-color: #eeeed2;
 }

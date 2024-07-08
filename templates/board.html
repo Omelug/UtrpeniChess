@@ -59,29 +59,27 @@
         }
 
         function generateFilterValues(rgb) {
-        const { r, g, b } = rgb;
-        // Calculating the necessary CSS filter values to match the hex color
-        // This requires some experimentation and fine-tuning
-        const brightness = (r + g + b) / 3 / 255;
-        const invert = brightness > 0.5 ? 0 : 1;
-        const sepia = 1;
-        const saturate = 100;
-        const hueRotate = 0;
-        const contrast = 1;
+            const { r, g, b } = rgb;
+            // Calculating the necessary CSS filter values to match the hex color
+            // This requires some experimentation and fine-tuning
+            const brightness = (r + g + b) / 3 / 255;
+            const invert = brightness > 0.5 ? 0 : 1;
+            const sepia = 1;
+            const saturate = 100;
+            const hueRotate = 0;
+            const contrast = 1;
 
-        // Adjusting brightness and contrast to match the target color
-        const adjustedBrightness = 1 + (brightness - 0.5) * 2;
-        const adjustedContrast = 1 + (contrast - 0.5) * 2;
+            // Adjusting brightness and contrast to match the target color
+            const adjustedBrightness = 1 + (brightness - 0.5) * 2;
+            const adjustedContrast = 1 + (contrast - 0.5) * 2;
 
-        return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
-    }
+            return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
+        }
 
-        [selectedRow, selectedCol, targetRow, targetCol] = [-1, -1, -1, -1];
+        let selectedRow = -1, selectedCol = -1, targetRow = -1, targetCol = -1;
 
         function renderChessboard(data) {
         chessboard.innerHTML = '';
-        console.log('Render:', gameMap);
-
         const boardSize = data.start.size;
         const cellSize = 50;
 
@@ -89,8 +87,7 @@
 
         chessboard.style.width = `${chessboardWidth}px`;
         chessboard.style.height = `${chessboardWidth}px`;
-        chessboard.style.gridTemplateColumns = `repeat(${boardSize}, ${cellSize}px)`;
-        chessboard.style.gridTemplateRows = `repeat(${boardSize}, ${cellSize}px)`;
+        chessboard.style.position = 'relative';
 
         const turnDiv = document.getElementById('turn');
         turnDiv.textContent = 'Turn: ' + data.status.turn;
@@ -99,67 +96,66 @@
             for (let col = 0; col < boardSize; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
+                cell.classList.add('cell');
+                cell.setAttribute('data-row', row);
+                cell.setAttribute('data-col', col);
+                cell.style.width = `${cellSize}px`;
+                cell.style.height = `${cellSize}px`;
 
                 if ((row + col) % 2 === 0) {
                     cell.classList.add('light');
                 } else {
                     cell.classList.add('dark');
                 }
-
-                cell.style.width = `${cellSize}px`;
-                cell.style.height = `${cellSize}px`;
-
-                const piece = findPieceAtPosition(data, row, col);
-                console.log('Piece:', piece);
-                if (piece) {
-                    const pieceDiv = document.createElement('div');
-
-                    pieceDiv.style.width = '100%';
-                    pieceDiv.style.height = '100%';
-                    pieceDiv.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${piece.fig_type}.svg")`;
-                    pieceDiv.style.backgroundSize = 'contain';
-                    pieceDiv.style.backgroundRepeat = 'no-repeat';
-                    pieceDiv.style.backgroundPosition = 'center';
-
-                    const colorHex = data.start.colors[piece.color];
-                    const rgb = hexToRgb(colorHex);
-                    console.log('RGB:', rgb)
-                    const filterValues = generateFilterValues(rgb);
-                    console.log('filterValues:', filterValues)
-
-                    pieceDiv.style.filter = filterValues;
-                    cell.appendChild(pieceDiv);
-                }
-
+                chessboard.appendChild(cell);
                 cell.addEventListener('click', () => {
                     if (selectedRow === -1 && selectedCol === -1) {
                         cell.classList.add('selected');
-                        [selectedRow, selectedCol] = [row, col];
-                    } else if (targetRow === -1 && targetCol === -1) {
-                        cell.classList.add('target');
-                        [targetRow, targetCol] = [row, col];
-                        turn(selectedRow, selectedCol, targetRow, targetCol);
-                        [selectedRow, selectedCol, targetRow, targetCol] = [-1, -1, -1, -1];
-
-                    } else {
-                        const previousSelectedCell = document.querySelector('.cell.selected');
-                        const previousTargetCell = document.querySelector('.cell.target');
-                        if (previousSelectedCell) {
-                            previousSelectedCell.classList.remove('selected');
-                        }
-                        if (previousTargetCell) {
-                            previousTargetCell.classList.remove('target');
-                        }
-
-                        cell.classList.add('selected');
+                        cell.style.background = 'green';
                         selectedRow = row;
                         selectedCol = col;
+                    } else if (targetRow === -1 && targetCol === -1) {
+
+                        turn(selectedRow, selectedCol, row, col);
+
+                        const previousSelectedCell = document.querySelector('.cell.selected');
+                        if (previousSelectedCell) {
+                            previousSelectedCell.style.background = '';
+                            previousSelectedCell.classList.remove('selected');
+                        }
+
+                        selectedRow = -1;
+                        selectedCol = -1;
                         targetRow = -1;
                         targetCol = -1;
                     }
                 });
 
-                chessboard.appendChild(cell);
+                const piece = findPieceAtPosition(data, row, col);
+                if (piece) {
+                    const pieceSvg = document.createElement('svg');
+                    pieceSvg.style.position = 'absolute';
+
+                    pieceSvg.style.width = `${cellSize}px`;
+                    pieceSvg.style.height = `${cellSize}px`;
+                    pieceSvg.style.top ="0";
+                    pieceSvg.style.left = "0";
+
+                    pieceSvg.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${piece.fig_type}.svg")`;
+                    pieceSvg.style.backgroundSize = 'contain';
+                    pieceSvg.style.backgroundRepeat = 'no-repeat';
+                    pieceSvg.style.backgroundPosition = 'center';
+                    pieceSvg.style.pointerEvents = 'none';
+
+                    //TODO not doning every time, set json
+                    const colorHex = data.start.colors[piece.color];
+                    const rgb = hexToRgb(colorHex);
+                    pieceSvg.style.filter = generateFilterValues(rgb);
+
+                    pieceSvg.style.transform = `translate(${col * cellSize}px, ${row * cellSize}px)`;
+
+                    chessboard.appendChild(pieceSvg);
+                }
             }
         }
     }
@@ -185,13 +181,9 @@
     });
 }
 
+
     function findPieceAtPosition(data, row, col) {
-        for (const piece of data.status.figures) {
-            if (piece.x === row && piece.y === col) {
-                return piece;
-            }
-        }
-        return null;
+        return data.status.figures.find(piece => piece.x === row && piece.y === col) || null;
     }
 
         function loadChat() {
