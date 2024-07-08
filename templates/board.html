@@ -78,31 +78,27 @@
                 cell.style.height = `${cellSize}px`;
 
                 const piece = findPieceAtPosition(data, row, col);
+                console.log('Piece:', piece);
                 if (piece) {
-                const pieceDiv = document.createElement('div');
-                pieceDiv.textContent = getPieceSymbol(piece.type);
-                pieceDiv.style.color = piece.color === 'white' ? data.start.colors.white : data.start.colors.black;
-                cell.appendChild(pieceDiv);
-            }
+                    const pieceDiv = document.createElement('div');
+                    pieceDiv.textContent = getPieceSymbol(piece.fig_type);
+                    pieceDiv.style.color = data.start.colors[piece.color]
+                    cell.appendChild(pieceDiv);
+                }
 
                 chessboard.appendChild(cell);
             }
         }
     }
 
-    function findpieceatposition(data, row, col) {
-        for (const player of Object.values(data.status.players)) {
-            for (const pieces of Object.values(player.figures)) {
-                for (const piece of pieces) {
-                    const [pieceRow, pieceCol] = piece.position;
-                    if (pieceRow === row && pieceCol === col) {
-                        return { type: Object.keys(pieces)[0]};
-                    }
-                }
-            }
+    function findPieceAtPosition(data, row, col) {
+    for (const piece of data.status.figures) {
+        if (piece.x === row && piece.y === col) {
+            return piece;
         }
-        return null;
     }
+    return null;
+}
 
     function getPieceSymbol(type) {
         // Implement your logic to return symbols (e.g., ♟ for pawn, ♚ for king)
