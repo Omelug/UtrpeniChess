@@ -46,6 +46,8 @@ def turn():
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
 
+    print(f"Turn from {tun_from} to {turn_to}")
+
     #TODO on board?
 
     #his turn?
@@ -53,16 +55,22 @@ def turn():
     actual_turn = map_jso['status']['turn']
     users_jso = load('users',game.code)
 
+
+
     #his turn?
-    if player_uuid != users_jso['players'][actual_turn]['uuid']:
-        return jsonify({'error': 'Not your turn'})
+    try:
+        if player_uuid != users_jso['players'][actual_turn]['uuid']:
+            return jsonify({'error': 'Not your turn'})
+    except KeyError:
+        return jsonify({'error': f"Not your turn, player {actual_turn} is not here"})
 
     #his figure?
     figure = get_figure(map_jso, tun_from['x'], tun_from['y'])
+    print(f"{tun_from} Figure: {figure}")
     if figure is None:
         return jsonify({'error': 'Empty space'})
     if actual_turn != figure['color']:
-        return jsonify({'error': f"Not your figure {figure['color']}"})
+        return jsonify({'error': f"Not your ({actual_turn}) figure {figure['color']}"})
 
     #attack on his figure?
     conflict_figure = get_figure(map_jso, turn_to['x'], turn_to['y'])
@@ -78,12 +86,10 @@ def turn():
     colors_turn = users_jso['colors_turn']
     current_index = colors_turn.index(actual_turn)
     next_index = (current_index + 1) % len(colors_turn)
+    map_jso['status']['turn'] = colors_turn[next_index]
 
     figure['x'] = turn_to['x']
     figure['y'] = turn_to['y']
-
-    print(f"Turn from {tun_from} to {turn_to}")
-    print(figure)
 
     save('map',game.code, map_jso)
     save('users', game.code, users_jso)

@@ -67,35 +67,64 @@
         } : null;
     }
 
-    function transformSvg(row, col, newRow, newCol) {
-        const selector = `svg[pos_x="${col}"][pos_y="${row}"]`;
+    function transformSvg(from_x, from_y,to_x, to_y) {
+        const selector = `svg[pos_x="${from_x}"][pos_y="${from_y}"]`;
         const pieceSvg = document.querySelector(selector);
-        pieceSvg.setAttribute('pos_x', col);
-        pieceSvg.setAttribute('pos_y', row);
+        pieceSvg.setAttribute('pos_x', to_x);
+        pieceSvg.setAttribute('pos_y', to_y);
 
         if (pieceSvg) {
-            pieceSvg.style.transform = `translate(${newCol * cellSize}px, ${newRow * cellSize}px)`;
+            pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px)`;
         } else {
-            console.error(`No SVG found at position (${col}, ${row})`);
+            console.error(`No SVG found at position (${from_x}, ${from_y})`);
         }
     }
-
+    const filterCache = new Map();
     function generateFilterValues(rgb) {
+        const rgbKey = `${rgb.r},${rgb.g},${rgb.b}`;
+        if (filterCache.has(rgbKey)) {
+            return filterCache.get(rgbKey);
+        }
         const { r, g, b } = rgb;
-        // Calculating the necessary CSS filter values to match the hex color
-        // This requires some experimentation and fine-tuning
-        const brightness = (r + g + b) / 3 / 255;
-        const invert = brightness > 0.5 ? 1 : 0;
+
+        // Custom calculations for sepia, saturate, hue-rotate, brightness, and contrast
+        // Adjust these formulas as needed to achieve the desired effect
+
         const sepia = 1;
-        const saturate = 100;
-        const hueRotate = 0;
-        const contrast = 1;
 
-        // Adjusting brightness and contrast to match the target color
-        const adjustedBrightness = 1 + (brightness - 0.5) * 2;
-        const adjustedContrast = 1 + (contrast - 0.5) * 2;
+        const rgbToHsl = (r, g, b) => {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
 
-        return `invert(${invert}) sepia(${sepia}) saturate(${saturate}%) hue-rotate(${hueRotate}deg) brightness(${adjustedBrightness}) contrast(${adjustedContrast})`;
+            if (max === min) {
+                h = s = 0; // achromatic
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h * 360, s, l];
+        };
+
+        const [h, s, l] = rgbToHsl(r, g, b);
+
+        // Calculate the filter values based on the HSL values
+        const hueRotateValue = h; // Use the hue value from HSL conversion
+        const saturateValue = s * 100; // Convert saturation to percentage
+        const brightnessValue = l * 2; // Adjust brightness as needed
+        const contrastValue = 1 + (l - 0.5) * 2; // Adjust contrast as needed
+
+        const filterValues = `sepia(${sepia}) saturate(${saturateValue}%) hue-rotate(${hueRotateValue}deg) brightness(${brightnessValue}) contrast(${contrastValue})`;
+        filterCache.set(rgbKey, filterValues);
+        return filterValues;
     }
 
     let selectedRow = -1, selectedCol = -1, targetRow = -1, targetCol = -1;
@@ -118,8 +147,8 @@
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
                 cell.classList.add('cell');
-                cell.setAttribute('data-row', row);
-                cell.setAttribute('data-col', col);
+                cell.setAttribute('cell_x', col);
+                cell.setAttribute('cell_y', row);
                 cell.style.width = `${cellSize}px`;
                 cell.style.height = `${cellSize}px`;
 
@@ -133,11 +162,11 @@
                     if (selectedRow === -1 && selectedCol === -1) {
                         cell.classList.add('selected');
                         cell.style.background = 'green';
-                        selectedRow = row;
                         selectedCol = col;
+                        selectedRow = row;
                     } else if (targetRow === -1 && targetCol === -1) {
 
-                        turn(selectedRow, selectedCol, row, col);
+                        turn(selectedCol, selectedRow, col, row);
 
                         const previousSelectedCell = document.querySelector('.cell.selected');
                         if (previousSelectedCell) {
@@ -152,7 +181,7 @@
                     }
                 });
 
-                const piece = findPieceAtPosition(data, row, col);
+                const piece = findPieceAtPosition(data, col, row);
                 if (piece) {
                     const pieceSvg = document.createElement('svg');
                     pieceSvg.style.position = 'absolute';
@@ -161,6 +190,7 @@
                     pieceSvg.style.height = `${cellSize}px`;
                     pieceSvg.setAttribute('pos_x', col);
                     pieceSvg.setAttribute('pos_y', row);
+                    pieceSvg.setAttribute('color', piece.color);
                     pieceSvg.style.top ="0";
                     pieceSvg.style.left = "0";
 
@@ -173,6 +203,7 @@
                     //TODO not doning every time, set json
                     const colorHex = data.start.colors[piece.color];
                     const rgb = hexToRgb(colorHex);
+                    console.log(rgb)
                     pieceSvg.style.filter = generateFilterValues(rgb);
 
                     pieceSvg.style.transform = `translate(${col * cellSize}px, ${row * cellSize}px)`;
@@ -183,10 +214,10 @@
         }
     }
 
-    function turn(selectedRow, selectedCol, targetRow, targetCol) {
+    function turn(selectedCol,selectedRow, targetCol, targetRow) {
         const postData = {
-            from: { x: selectedRow, y: selectedCol },
-            to: { x: targetRow, y: targetCol },
+            from: { x: selectedCol, y: selectedRow },
+            to: { x: targetCol, y: targetRow },
         };
         fetch('/turn', {
             method: 'POST',
@@ -204,8 +235,8 @@
         });
     }
 
-    function findPieceAtPosition(data, row, col) {
-        return data.status.figures.find(piece => piece.x === row && piece.y === col) || null;
+    function findPieceAtPosition(data, col, row) {
+        return data.status.figures.find(piece => piece.x === col && piece.y === row) || null;
     }
 
     function loadChat() {
