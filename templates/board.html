@@ -34,6 +34,9 @@
         var socket_io = io('http://127.0.0.1:5000');
         socket_io.on('turn_move', function (data) {
             console.log("Valid move")
+            if (data.killed) {
+                removeSvg(data.killed.x, data.killed.y);
+            }
             transformSvg(data.from.x, data.from.y, data.to.x, data.to.y)
         })
     });
@@ -77,6 +80,13 @@
             pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px)`;
         } else {
             console.error(`No SVG found at position (${from_x}, ${from_y})`);
+        }
+    }
+    function removeSvg(x, y) {
+        const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
+        const pieceSvg = document.querySelector(selector);
+        if (pieceSvg) {
+            pieceSvg.parentNode.removeChild(pieceSvg);
         }
     }
     const filterCache = new Map();
@@ -203,7 +213,7 @@
                     //TODO not doning every time, set json
                     const colorHex = data.start.colors[piece.color];
                     const rgb = hexToRgb(colorHex);
-                    console.log(rgb)
+                    //console.log(rgb)
                     pieceSvg.style.filter = generateFilterValues(rgb);
 
                     pieceSvg.style.transform = `translate(${col * cellSize}px, ${row * cellSize}px)`;
