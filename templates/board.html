@@ -33,7 +33,7 @@
         fetchInitialMap();
         var socket_io = io('http://127.0.0.1:5000');
         socket_io.on('turn_move', function (data) {
-            console.log("awdwadaw")
+            console.log("Valid move")
             transformSvg(data.from.x, data.from.y, data.to.x, data.to.y)
         })
     });

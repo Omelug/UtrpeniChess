@@ -79,8 +79,15 @@ def turn():
     current_index = colors_turn.index(actual_turn)
     next_index = (current_index + 1) % len(colors_turn)
 
+    figure['x'] = turn_to['x']
+    figure['y'] = turn_to['y']
+
+    print(f"Turn from {tun_from} to {turn_to}")
+    print(figure)
+
     save('map',game.code, map_jso)
     save('users', game.code, users_jso)
+
     #TODO sent changed
     socketio.emit('turn_move', {"from": data.get('from'), "to": data.get('to'),'turn': colors_turn[next_index]})
     return jsonify({'error': 'ok'})
