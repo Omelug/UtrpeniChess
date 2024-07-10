@@ -35,8 +35,9 @@ def chat_test():
 
 
 def get_figure(x, y, map_jso):
-    figures = map_jso['status']['figures']
-    for figure in figures:
+    fig_keys= map_jso['status']['figures'].keys()
+    for key in fig_keys:
+        figure = map_jso['status']['figures'][key]
         if figure['x'] == x and figure['y'] == y:
             return figure
     return None
@@ -44,12 +45,12 @@ def get_figure(x, y, map_jso):
 @chat_blueprint.route('/turn', methods=['POST'])
 def turn():
     data = request.json
-    tun_from = data.get('from')
+    active_fig = data.get('id')
     turn_to = data.get('to')
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
 
-    print(f"Turn from {tun_from} to {turn_to}")
+    print(f"Turn {active_fig} to {turn_to}")
 
     #TODO on board?
 
@@ -65,9 +66,10 @@ def turn():
     except KeyError:
         return jsonify({'error': f"Not your turn, player {actual_turn} is not here"})
 
-    #his figure?
-    figure = get_figure(tun_from['x'], tun_from['y'], map_jso)
-    print(f"{tun_from} Figure: {figure}")
+
+    figure = map_jso['status']['figures'][active_fig]
+
+    # his figure?
     if figure is None:
         return jsonify({'error': 'Empty space'})
     if actual_turn != figure['color']:
@@ -101,7 +103,7 @@ def turn():
     save('map',game.code, map_jso)
     save('users', game.code, users_jso)
 
-    response_json.update({"from": data.get('from'), "to": data.get('to'), 'turn': colors_turn[next_index]})
+    response_json.update({"active_fig": active_fig, "to": data.get('to'), 'turn': colors_turn[next_index]})
     socketio.emit('turn_move', response_json)
     return jsonify({'error': 'ok'})
 

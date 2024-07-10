@@ -37,7 +37,7 @@
             if (data.killed) {
                 removeSvg(data.killed.x, data.killed.y);
             }
-            transformSvg(data.from.x, data.from.y, data.to.x, data.to.y)
+            transformSvg(data.active_fig, data.to.x, data.to.y)
         })
     });
 
@@ -70,8 +70,8 @@
         } : null;
     }
 
-    function transformSvg(from_x, from_y,to_x, to_y) {
-        const selector = `svg[pos_x="${from_x}"][pos_y="${from_y}"]`;
+    function transformSvg(figure_id,to_x, to_y) {
+        const selector = `svg[id="${figure_id}"]`;
         const pieceSvg = document.querySelector(selector);
         pieceSvg.setAttribute('pos_x', to_x);
         pieceSvg.setAttribute('pos_y', to_y);
@@ -190,43 +190,43 @@
                         targetCol = -1;
                     }
                 });
-
-                const piece = findPieceAtPosition(data, col, row);
-                if (piece) {
-                    const pieceSvg = document.createElement('svg');
-                    pieceSvg.style.position = 'absolute';
-
-                    pieceSvg.style.width = `${cellSize}px`;
-                    pieceSvg.style.height = `${cellSize}px`;
-                    pieceSvg.setAttribute('pos_x', col);
-                    pieceSvg.setAttribute('pos_y', row);
-                    pieceSvg.setAttribute('color', piece.color);
-                    pieceSvg.style.top ="0";
-                    pieceSvg.style.left = "0";
-
-                    pieceSvg.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${piece.fig_type}.svg")`;
-                    pieceSvg.style.backgroundSize = 'contain';
-                    pieceSvg.style.backgroundRepeat = 'no-repeat';
-                    pieceSvg.style.backgroundPosition = 'center';
-                    pieceSvg.style.pointerEvents = 'none';
-
-                    //TODO not doning every time, set json
-                    const colorHex = data.start.colors[piece.color];
-                    const rgb = hexToRgb(colorHex);
-                    //console.log(rgb)
-                    pieceSvg.style.filter = generateFilterValues(rgb);
-
-                    pieceSvg.style.transform = `translate(${col * cellSize}px, ${row * cellSize}px)`;
-
-                    chessboard.appendChild(pieceSvg);
-                }
             }
+        }
+
+        //const piece = findPieceAtPosition(data, col, row);
+        for (const key in data.status.figures) {
+            const figure = data.status.figures[key];
+            const fig_Svg = document.createElement('svg');
+
+            fig_Svg.style.position = 'absolute';
+            fig_Svg.style.width = `${cellSize}px`;
+            fig_Svg.style.height = `${cellSize}px`;
+            fig_Svg.setAttribute('pos_x', figure.x);
+            fig_Svg.setAttribute('pos_y', figure.y);
+            fig_Svg.setAttribute('id', key);
+            fig_Svg.setAttribute('color', figure.color);
+            fig_Svg.style.top ="0";
+            fig_Svg.style.left = "0";
+            fig_Svg.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${figure.fig_type}.svg")`;
+            fig_Svg.style.backgroundSize = 'contain';
+            fig_Svg.style.backgroundRepeat = 'no-repeat';
+            fig_Svg.style.backgroundPosition = 'center';
+            fig_Svg.style.pointerEvents = 'none';
+
+            const colorHex = data.start.colors[figure.color];
+            const rgb = hexToRgb(colorHex);
+            fig_Svg.style.filter = generateFilterValues(rgb);
+
+            fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${figure.y * cellSize}px)`;
+            chessboard.appendChild(fig_Svg);
         }
     }
 
-    function turn(selectedCol,selectedRow, targetCol, targetRow) {
+    function turn(x,y, targetCol, targetRow) {
+        const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
+        const figureSvg = document.querySelector(selector);
         const postData = {
-            from: { x: selectedCol, y: selectedRow },
+            id: figureSvg.id,
             to: { x: targetCol, y: targetRow },
         };
         fetch('/turn', {

@@ -17,50 +17,221 @@
         "view": 3
       }
     },
-    "figures": [
-        {"x":0,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":1,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":2,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":3,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":4,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":5,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":6,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-        {"x":7,"y":1, "color": "black", "fig_type": "pawn", "moved": false},
-
-        {"x":0,"y":0, "color": "black", "fig_type": "tower"},
-        {"x":7,"y":0, "color": "black", "fig_type": "tower"},
-
-        {"x":3,"y":0, "color": "black", "fig_type": "queen"},
-
-        {"x":4,"y":0, "color": "black", "fig_type": "king", "moved": false},
-
-        {"x":2,"y":0, "color": "black", "fig_type": "bishop"},
-        {"x":5,"y":0, "color": "black", "fig_type": "bishop"},
-
-        {"x":1,"y":0, "color": "black", "fig_type": "horse"},
-        {"x":6,"y":0, "color": "black", "fig_type": "horse"},
-
-        {"x":0,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":1,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":2,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":3,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":4,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":5,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":6,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-        {"x":7,"y":6, "color": "white", "fig_type": "pawn", "moved": false},
-
-        {"x":0,"y":7, "color": "white", "fig_type": "tower"},
-        {"x":7,"y":7, "color": "white", "fig_type": "tower"},
-
-        {"x":3,"y":7, "color": "white", "fig_type": "queen"},
-
-        {"x":4,"y":7, "color": "white", "fig_type": "king",  "moved": false},
-
-        {"x":2,"y":7, "color": "white", "fig_type": "bishop"},
-        {"x":5,"y":7, "color": "white", "fig_type": "bishop"},
-
-        {"x":1,"y":7, "color": "white", "fig_type": "horse"},
-        {"x":6,"y":7, "color": "white", "fig_type": "horse"}
-    ]
+    "figures": {
+      "0": {
+        "x": 0,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "1": {
+        "x": 1,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "2": {
+        "x": 2,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "3": {
+        "x": 3,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "4": {
+        "x": 4,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "5": {
+        "x": 5,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "6": {
+        "x": 6,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "7": {
+        "x": 7,
+        "y": 1,
+        "color": "black",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "8": {
+        "x": 0,
+        "y": 0,
+        "color": "black",
+        "fig_type": "tower",
+        "moved": false
+      },
+      "9": {
+        "x": 7,
+        "y": 0,
+        "color": "black",
+        "fig_type": "tower",
+        "moved": false
+      },
+      "10": {
+        "x": 3,
+        "y": 0,
+        "color": "black",
+        "fig_type": "queen"
+      },
+      "11": {
+        "x": 4,
+        "y": 0,
+        "color": "black",
+        "fig_type": "king",
+        "moved": false
+      },
+      "12": {
+        "x": 2,
+        "y": 0,
+        "color": "black",
+        "fig_type": "bishop"
+      },
+      "13": {
+        "x": 5,
+        "y": 0,
+        "color": "black",
+        "fig_type": "bishop"
+      },
+      "14": {
+        "x": 1,
+        "y": 0,
+        "color": "black",
+        "fig_type": "horse"
+      },
+      "15": {
+        "x": 6,
+        "y": 0,
+        "color": "black",
+        "fig_type": "horse"
+      },
+      "16": {
+        "x": 0,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "17": {
+        "x": 1,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "18": {
+        "x": 2,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "19": {
+        "x": 3,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "20": {
+        "x": 4,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "21": {
+        "x": 5,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "22": {
+        "x": 6,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "23": {
+        "x": 7,
+        "y": 6,
+        "color": "white",
+        "fig_type": "pawn",
+        "moved": false
+      },
+      "24": {
+        "x": 0,
+        "y": 7,
+        "color": "white",
+        "fig_type": "tower",
+        "moved": false
+      },
+      "25": {
+        "x": 7,
+        "y": 7,
+        "color": "white",
+        "fig_type": "tower",
+        "moved": false
+      },
+      "26": {
+        "x": 3,
+        "y": 7,
+        "color": "white",
+        "fig_type": "queen"
+      },
+      "27": {
+        "x": 4,
+        "y": 7,
+        "color": "white",
+        "fig_type": "king",
+        "moved": false
+      },
+      "28": {
+        "x": 2,
+        "y": 7,
+        "color": "white",
+        "fig_type": "bishop"
+      },
+      "29": {
+        "x": 5,
+        "y": 7,
+        "color": "white",
+        "fig_type": "bishop"
+      },
+      "30": {
+        "x": 1,
+        "y": 7,
+        "color": "white",
+        "fig_type": "horse"
+      },
+      "31": {
+        "x": 6,
+        "y": 7,
+        "color": "white",
+        "fig_type": "horse"
+      }
+    }
   }
 }
