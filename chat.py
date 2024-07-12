@@ -52,7 +52,7 @@ def turn():
 
     print(f"Turn {active_fig} to {turn_to}")
 
-    #TODO on board?
+    #TODO to x,y on board?
 
     #his turn?
     map_jso = load('map',game.code)
@@ -81,7 +81,7 @@ def turn():
         return jsonify({'error': 'Cant attack on your figure'})
 
     figure_class = figures.FIGURE_CLASSES[figure['fig_type']]
-    figure_obj = figure_class(figure, map_jso)
+    figure_obj = figure_class(active_fig, figure, map_jso)
 
     killed_copy = copy.deepcopy(conflict_figure)
     moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure)
@@ -105,7 +105,7 @@ def turn():
 
     response_json.update({"active_fig": active_fig, "to": data.get('to'), 'turn': colors_turn[next_index]})
     socketio.emit('turn_move', response_json)
-    return jsonify({'error': 'ok'})
+    return jsonify({'error': None})
 
 
 @chat_blueprint.route('/get_map')

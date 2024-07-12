@@ -31,6 +31,7 @@ def index():
 
 
 def player_connect(game, create_data):
+    #TODO unconnect and delete if emty game
     response = make_response(jsonify({'redirect': url_for('board')}))
     response.set_cookie('game_code', game.code, samesite='None', secure=True)
 
