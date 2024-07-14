@@ -17,25 +17,56 @@
     <div class="createGameDiv">
         <button id="gamemenu"> Vytvořit hru </button>
     </div>
+    
+    
+    
+    
+    
     <div class="connectDiv">
-        <label for="playerName">Name:</label>
+     <!--   <label for="playerName">Name:</label>
         <input id="playerName"><br>
         <label for="gameCode">Kód hry:</label>
         <input id="gameCode" maxlength="9"><br>
-        <p id="connectGameError"><p>
+        <p id="connectGameError"><p>-->
         <button id="connectGameBtn">Připojit se</button>
-        <p id="resume_code"><p>
+       <!-- <p id="resume_code"><p>--> 
     </div>
 
+    <div class="JoinGameMenu" id="JoinGameMenu">
+        <div class="join-img">
+            <img src="../static/pictures/King.png" alt="king">
+            <script src="/javascript/open-connect-menu.js"></script>
+            <script src="/javascript/remove-m-c.js"></script>
+        </div>
+        
+        <div class="container-setting-join-menu">
+            <div class="form-container">
+                <label for="playerName" class="custom-label">Username</label>
+                <input id="playerName" class="custom-input"><br>
+            </div>
+            
+            <div class="form-container">
+            <label for="gameCode" class="custom-code-label">Kód hry:</label>
+            <input id="gameCode" class="custom-code-input" maxlength="9"><br>
+            </div>
+            <p id="connectGameError"><p>
+             <!--   <p id="resume_code"><p>-->  
+        </div>
+    </div>
+    
+    
+    
+    
     <div class="createGameMenu" id="createGameMenu">
-        <div class="container-img">
+    <div class="container-img">
         <img src="../static/pictures/Horse.png" alt="horse">
-           <script src="/javascript/openscript.js"></script>
-        </div>
-        <div class="container-setting-menu">
-            <button id="createGame"> Hrát </button>
-
-        </div>
+        <script src="/javascript/open-create-menu.js"></script>
+        <script src="/javascript/remove-m-cr.js"></script>
+    </div>
+    
+    <div class="container-setting-menu">
+        <button id="createGame"> Hrát </button>
+    </div>
 
         <!--Dropovací menu-->
             <div class="dropdown">

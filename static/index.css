@@ -28,7 +28,12 @@
 
 /*/The main page color/*/
 body{
-    background-color: #303030;
+    background-image: repeating-conic-gradient(#000000 0% 25%, #303030 0% 50%);
+    background-position: 0 0, 28px 28px;
+    background-size: 56px 56px;
+    background-color: #bcbcbc;
+
+
 }
 
 /*/The main page buttons/*/
@@ -153,9 +158,173 @@ body{
     padding: 10px 15px;
 
 }
-/*/SelectMap/*/
-.dropdown{
 
+
+/*/Tomuto rozumím jen já a Bůh [Když to čteš tak už nejspíš jen Bůh]/*/
+
+
+/*/Container for Horse img/*/
+.join-img{
+    text-align: center;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 60px;
+    transform: translate(-50%, 1%);
+}
+
+
+.JoinGameMenu{
+    visibility: hidden;
+}
+.open-join-menu{
+    visibility: visible;
+}
+
+.JoinGameMenu img{
+    width: 300px;
+    margin-top: -50px;
+    border-radius: 0%;
+    box-shadow: none ;
+}
+
+
+.container-setting-join-menu{
+ 
+   border-radius: 30%;
+    width: 450px;
+    height: 450px;
+    text-align: center;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, 1%);
+    background: rgba(94, 94, 94, 0.3);
+    background: rgba(255,255,255,0.1);
+
+
+
+-webkit-box-shadow:0px 0px 8px 4px rgba(0,0,0,1);
+-moz-box-shadow: 0px 0px 8px 4px rgba(0,0,0,1);
+box-shadow: 0px 0px 8px 4px rgba(0,0,0,1);
+
+    
+
+}
+
+#createGame{
+    margin-top:8%;
+    width: 330px;
+    background-color:#303030;
+    border: 2px #000000 solid;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+
+    color: aliceblue;
+    font-weight: bolder;
+    font-size: 25px;  
+
+    padding: 10px 15px;
+
+}
+
+
+/* Styl pro kontejner formuláře */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px;
+    text-align: center;
+}
+
+/* Styl pro label [NAME] */
+.custom-label {
+    background-color: #303030;
+    border: 2px #000000 solid;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+    width: 250px;
+    color: aliceblue;
+    text-decoration: none;
+    font-size: 25px;  
+    font-weight: bolder;
+    text-transform: none;
+    padding: 10px 15px;
+    font-family: Arial, sans-serif;  
+    
+    /* Nastavení fontu */
+   /*/ font-size: 60px;  /* Nastavení velikosti textu */
+  /*/  color: #000000;  /* Nastavení barvy textu */
+    /*/margin-left: 40px;/*/
+    margin-bottom: 5px;  /* Mezera pod labelem */
+   /*/ border: 10px solid #ccc;  /* Nastavení okraje */
+    
+}
+
+/* Styl pro input */
+.custom-input {
+    width: 250px;  /* Nastavení šířky */
+    padding: 8px;  /* Vnitřní odsazení */
+    font-size: 20px;  /* Nastavení velikosti textu */
+    border: 1px solid #000000;  /* Nastavení okraje */
+    background-color: #303030;
+    border-radius: 4px;  /* Zakulacení rohů */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);  /* Nastavení stínu */
+    text-align: center;
+    color:aliceblue; 
+}
+
+/* Styl pro input při zaostření */
+.custom-input:focus {
+    border-color: #66afe9;  /* Barva okraje při zaostření */
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);  /* Stín při zaostření */
+    outline: none;  /* Odstranění obrysu */
+}
+
+
+/* Styl pro label [KodHry] */
+.custom-code-label {
+    background-color: #303030;
+    border: 2px #000000 solid;
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
+    width: 250px;
+    color: aliceblue;
+    text-decoration: none;
+    font-size: 25px;  
+    font-weight: bolder;
+    text-transform: none;
+    padding: 10px 15px;
+    font-family: Arial, sans-serif;  
+    
+    /* Nastavení fontu */
+   /*/ font-size: 60px;  /* Nastavení velikosti textu */
+  /*/  color: #000000;  /* Nastavení barvy textu */
+    /*/margin-left: 40px;/*/
+    margin-bottom: 5px;  /* Mezera pod labelem */
+   /*/ border: 10px solid #ccc;  /* Nastavení okraje */
+    
+}
+
+/* Styl pro input */
+.custom-code-input {
+    width: 250px;  /* Nastavení šířky */
+    padding: 8px;  /* Vnitřní odsazení */
+    font-size: 20px;  /* Nastavení velikosti textu */
+    border: 1px solid #000000;  /* Nastavení okraje */
+    background-color: #303030;
+    border-radius: 4px;  /* Zakulacení rohů */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);  /* Nastavení stínu */
+    text-align: center;
+    color: aliceblue;
+}
+
+/* Styl pro input při zaostření */
+.custom-code-input:focus {
+    border-color: #66afe9;  /* Barva okraje při zaostření */
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);  /* Stín při zaostření */
+    outline: none;  /* Odstranění obrysu */
 }
 
 
@@ -165,3 +334,37 @@ body{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*/SelectMap/*/
+.dropdown{
+
+}
