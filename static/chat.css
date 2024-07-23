@@ -1,0 +1,48 @@
+#Chat{
+    border: 1px solid #487a3c;
+    padding: 10px;
+    margin: auto;
+    font-size: 10px;
+    min-width: 300px;
+    width: 50%;
+}
+.msgP{
+    color: white;
+}
+#sendDiv {
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+#messageInput{
+    flex-grow: 1;
+}
+input[type=text]{
+    border: none;
+    background-color: rgba(76, 133, 113, 0.8);
+}
+input:focus {
+    outline: none;
+    border: none;
+    background-color: #6c8f64;
+}
+#chatWindow{
+    max-height: 200px;
+    overflow-y: auto;
+}
+#sendMessage {
+    padding: 0;
+    border: none;
+    width: 80px;
+}
+#sendMsg{
+    font-size: 15px;
+    border-radius: 0;
+    margin: 0;
+}
+#messageInput {
+    margin: 8px;
+    font-size: 15px;
+    box-shadow: none;
+    border-radius: 0;
+}

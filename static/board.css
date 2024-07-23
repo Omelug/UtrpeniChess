@@ -1,4 +1,4 @@
-/*/Gameboard/*/
+/*/Board, but chan is in chat.css */
 
 body {
     display: grid;
@@ -23,17 +23,6 @@ body {
     margin: 0;
     overflow-y: scroll;
 }
-#messageInput {
-    width: calc(100% - 80px);
-    padding: 10px;
-    margin-right: 10px; /* Optional: Add spacing */
-}
-
-#sendMessage {
-    padding: 0;
-    border: none;
-    width: 80px;
-}
 
 .container-gameboard{
     background: #769656
@@ -42,8 +31,8 @@ body {
 #player, #game , #turn{
     height: 25px;
     border-radius: 20px;
-    box-shadow: 6px 6px 15px -4px rgba(0,0,0,0.75);
-    color: #f6ecec;
+    box-shadow: 6px 6px 15px -4px black;
+    color: white;
     font-weight: bolder;
     font-size: 15px;
 }
@@ -64,7 +53,6 @@ body {
     justify-content: center;
     align-items: center;
 }
-
 
 .cell.dark {
     background-color: #769656;

@@ -2,85 +2,63 @@
 <!--Dávej si pozor na začátek a konec vět <div> </div> atd neoznačuje to program když to máš blbě nebo zbytečně v přesahu-->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/index.css">
-    <title>Šachy pro více hráčů</title>
-    <script src="/javascript/game.js" defer></script>
+    <title>Šachy plné utrpení!!!!</title>
+    <script src="/javascript/menu.js" defer></script>
 </head>
-    <div class="titleDiv">
-        <h1 id ="titleText">Utrpení-Chess</h1>
-        <script src="/javascript/remove.js"></script>
-    </div>
-    <div class="createGameDiv">
-        <button id="gamemenu"> Vytvořit hru </button>
-    </div>
-    
-    
-    
-    
-    
-    <div class="connectDiv">
-     <!--   <label for="playerName">Name:</label>
-        <input id="playerName"><br>
-        <label for="gameCode">Kód hry:</label>
-        <input id="gameCode" maxlength="9"><br>
-        <p id="connectGameError"><p>-->
-        <button id="connectGameBtn">Připojit se</button>
-       <!-- <p id="resume_code"><p>--> 
+<body>
+    <div id="titleDiv">
+        <h1 id="mainMenuTitle">Utrpení Chess</h1>
     </div>
 
-    <div class="JoinGameMenu" id="JoinGameMenu">
-        <div class="join-img">
-            <img src="../static/pictures/King.png" alt="king">
-            <script src="/javascript/open-connect-menu.js"></script>
-            <script src="/javascript/remove-m-c.js"></script>
-        </div>
-        
-        <div class="container-setting-join-menu">
-            <div class="form-container">
-                <label for="playerName" class="custom-label">Username</label>
-                <input id="playerName" class="custom-input"><br>
-            </div>
-            
-            <div class="form-container">
-            <label for="gameCode" class="custom-code-label">Kód hry:</label>
-            <input id="gameCode" class="custom-code-input" maxlength="9"><br>
-            </div>
-            <p id="connectGameError"><p>
-             <!--   <p id="resume_code"><p>-->  
-        </div>
-    </div>
-    
-    
-    
-    
-    <div class="createGameMenu" id="createGameMenu">
-    <div class="container-img">
-        <img src="../static/pictures/Horse.png" alt="horse">
-        <script src="/javascript/open-create-menu.js"></script>
-        <script src="/javascript/remove-m-cr.js"></script>
-    </div>
-    
-    <div class="container-setting-menu">
-        <button id="createGame"> Hrát </button>
+    <div id="subMenuBtnsDiv">
+
+        <button id="createMenuBtn"> Vytvořit hru </button><br>
+        <button id="connectMenuBtn">Připojit se</button>
+
+        <script src="/javascript/open_hide.js"></script>
+
     </div>
 
-        <!--Dropovací menu-->
-            <div class="dropdown">
-                <select class="select-map">
-                <option value="">Select An Option</option>
-                <option value="Classic">S1</option>
-                <option value="Není">S2</option>
-                <option value="Chybý">S3</option>
-                <option value="Eror404">S4</option>
+    <div id="createMenu">
+        <div class="container-row">
+            <img id="createMenuImg" src="../static/pictures/Horse.png" alt="horse">
+        </div>
+
+        <div class="container-row container-setting-menu">
+            <button id="playBtn"> Hrát </button>
+            <div id="selectMapMapDiv">
+                <select class="selectMapMap">
+                    <option value="">Select An Option</option>
+                    <option value="Classic">S1</option>
+                    <option value="Není">S2</option>
+                    <option value="Chybý">S3</option>
+                    <option value="Eror404">S4</option>
                 </select>
             </div>
+        </div>
     </div>
-    
 
+    <div id="connectMenu">
+        <div class="container-row">
+            <img src="../static/pictures/King.png" alt="king">
+        </div>
 
+       <div class="container-row container-setting-menu" id="connectMenuCon">
+
+           <label for="playerName" >Username</label><br>
+           <input id="playerName"><br>
+
+           <label for="gameCode">Kód hry:</label><br>
+           <input id="gameCode" maxlength="9"><br>
+
+           <p id="connectGameError"><p>
+           <p id="resume_code"><p>
+       </div>
+    </div>
 </body>
 </html>

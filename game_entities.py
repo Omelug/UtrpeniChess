@@ -97,7 +97,7 @@ class Game:
 
     @staticmethod
     def init_game(game_code, map_name):
-        game_path = os.path.join(f"./games/{game_code}", "game.json")
+        game_path = os.path.join(f"./games/{game_code}", "menu.json")
         with open(game_path, "w+") as f:
             json.dump({'map_name': map_name}, f)
 

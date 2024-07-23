@@ -1,4 +1,4 @@
-document.getElementById('createGame').addEventListener('click', function() {
+document.getElementById('playBtn').addEventListener('click', function() {
     fetch('/create_game', {
         method: 'POST',
         headers: {
