@@ -15,6 +15,8 @@ document.getElementById('playBtn').addEventListener('click', function() {
     }).catch(error => {
         console.log('Error:', error);
     });
+    const gameCode = document.getElementById('game').textContent.split(': ')[1];
+    socket.emit('join', { game_code: gameCode });
 });
 
 function getCookie(name) {

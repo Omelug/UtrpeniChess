@@ -133,7 +133,7 @@ class Game:
                 add_new_color = jso['colors'].remove(color) # give player pref_color
             else:
                 add_new_color = jso['colors'].pop(0) # give player pref_color
-            jso['players'][add_new_color] = {'uuid': player_uuid, 'name': "Anon"}
+            jso['players'][add_new_color] = {'uuid': player_uuid, 'name': "Anon"} #TODO add aem to create Game
             selected = jso['players'][add_new_color]
 
         selected['uuid'] = player_uuid

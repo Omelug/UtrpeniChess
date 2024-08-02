@@ -1,8 +1,7 @@
 import copy
 
-from flask_socketio import SocketIO
 from flask import make_response, render_template, Blueprint, request, jsonify
-
+from flask_socketio import SocketIO, join_room, leave_room
 import figures
 from game_entities import Game, send_message, get_name, load, save
 
@@ -10,7 +9,7 @@ socketio = SocketIO()
 chat_blueprint = Blueprint('chat', __name__)
 random_int = 0
 
-def init_app(app):
+def init_chat(app):
     socketio.init_app(app)
     app.register_blueprint(chat_blueprint)
 
@@ -21,9 +20,23 @@ def handle_message():
     game_code = request.cookies.get('game_code')
     name = get_name(game_code, request.cookies.get('player_uuid'))
     send_message(game_code,name, message)
-    socketio.emit('message_received', {'name': name, 'message': message})
+    socketio.emit('message_received', {'name': name, 'message': message}, room=game_code)
     return jsonify({'status': 'Message sent'})
 
+
+@socketio.on('join')
+def on_join(data):
+    game_code = data['game_code']
+    join_room(game_code)
+    name = get_name(game_code, request.cookies.get('player_uuid'))
+    socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} JOINED"}, room=game_code)
+
+@socketio.on('leave')
+def on_leave(data):
+    game_code = data['game_code']
+    leave_room(game_code)
+    name = get_name(game_code, request.cookies.get('player_uuid'))
+    socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} LEFT"}, room=game_code)
 
 @chat_blueprint.route('/chat')
 def chat_test():

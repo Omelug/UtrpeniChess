@@ -3,13 +3,13 @@ import os.path
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
 from flask_socketio import SocketIO
 
-from chat import init_app
+from chat import init_chat
 from game_entities import Game, get_uuid
 
 
 app = Flask(__name__)
 socketio = SocketIO(app)
-init_app(app)
+init_chat(app)
 
 
 @app.route('/favicon.ico')
@@ -31,7 +31,6 @@ def index():
 
 
 def player_connect(game, create_data):
-    #TODO unconnect and delete if emty game
     response = make_response(jsonify({'redirect': url_for('board')}))
     response.set_cookie('game_code', game.code, samesite='None', secure=True)
 
@@ -75,8 +74,7 @@ def board():
     )
     return response
 
-
-
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app, host='127.0.0.1', port=5000)
+
 

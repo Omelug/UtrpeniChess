@@ -1,14 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-    fetchInitialMap();
-    var socket_io = io('http://127.0.0.1:5000');
-    socket_io.on('turn_move', function (data) {
-        console.log("Valid move")
-        if (data.killed) {
-            removeSvg(data.killed.x, data.killed.y);
-        }
-        transformSvg(data.active_fig, data.to.x, data.to.y)
-    })
-});
 
 let gameMap = {};
 const chessboard = document.getElementById('chessboard');
@@ -192,16 +181,16 @@ function turn(x,y, targetCol, targetRow) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Turn error:', data.error);
+            if(data.error === null){
+                console.log('Turn success');
+            }else{
+              console.log('Turn error:', data.error, '\nData:', data);
+            }
         })
         .catch(error => {
             console.error('Error:', error);
         });
     }
-}
-
-function findPieceAtPosition(data, col, row) {
-    return data.status.figures.find(piece => piece.x === col && piece.y === row) || null;
 }
 
 function loadChat() {
@@ -213,9 +202,19 @@ function loadChat() {
             script.src = '/javascript/chat.js';
             document.body.appendChild(script);
 
-            /*const scripts = document.getElementById('chatContainer').getElementsByTagName('script');
-              for (let script of scripts) {eval(script.innerHTML)};*/
         })
         .catch(error => console.error('Error loading chat:', error));
     }
+function initBoard(){
+    fetchInitialMap();
+    var socket_io = io('http://127.0.0.1:5000');
+    socket_io.on('turn_move', function (data) {
+        console.log("Valid move")
+        if (data.killed) {
+            removeSvg(data.killed.x, data.killed.y);
+        }
+        transformSvg(data.active_fig, data.to.x, data.to.y)
+    })
+}
+document.addEventListener('DOMContentLoaded', initBoard);
 document.addEventListener('DOMContentLoaded', loadChat);

@@ -7,16 +7,13 @@
     <link rel="stylesheet" href="../static/board.css ">
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <title>Board</title>
-
 </head>
 <body>
     <div class="mainDiv">
-        <div>
-            <!--<p id="player">Player uuid: {{player_uuid}}</p> -->
-            <div class="game-info-container">
-                <p id="game">Game code: {{game_code}}</p>
-                <p id="turn">Turn: </p>
-            </div>
+        <!--<p id="player">Player uuid: {{player_uuid}}</p> -->
+        <div id="game-info-container">
+            <p id="game">Game code: {{game_code}}</p>
+            <p id="turn">Turn: </p>
         </div>
 
         <div class="container-gameboard">
@@ -24,8 +21,7 @@
         </div>
 
         <div id="chatContainer"></div>
-
     </div>
-    <script src="/javascript/board.js"></script>
+     <script src="/javascript/board.js"></script>
 </body>
 </html>

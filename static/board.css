@@ -28,18 +28,27 @@ body {
     background: #769656
 }
 
-#player, #game , #turn{
-    height: 25px;
+#player{
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px black;
     color: white;
     font-weight: bolder;
     font-size: 15px;
 }
-.game-info-container {
-    display: flex;
-    justify-content: space-between;
+#game-info-container {
+    width: 80%;
+    margin: 5px;
+    padding: 2px 10px;
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Space out items to fill the container */
+    align-items: center; /* Center items vertically */
+    border-radius: 20px;
+    box-shadow: 6px 6px 15px -4px black;
+    color: white;
+    font-weight: bolder;
+    font-size: 15px;
 }
+
 #chessboard {
     display: grid;
     grid-template-columns: repeat(8, 50px);
