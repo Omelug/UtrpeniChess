@@ -1,3 +1,4 @@
+import { getCookie } from "./basic.js";
 
 let gameMap = {};
 const chessboard = document.getElementById('chessboard');
@@ -94,6 +95,10 @@ function renderChessboard(data) {
     chessboard.style.height = `${chessboardWidth}px`;
     chessboard.style.position = 'relative';
 
+    let viewAngle = 90 * getCookie('view');
+    viewAngle = viewAngle % 360; // Ensure the angle stays within 0-359 degrees
+    chessboard.style.transform = `rotate(${viewAngle}deg)`;
+
     const turnDiv = document.getElementById('turn');
     turnDiv.textContent = 'Turn: ' + data.status.turn;
     for (let row = 0; row < boardSize; row++) {
@@ -184,7 +189,7 @@ function turn(x,y, targetCol, targetRow) {
             if(data.error === null){
                 console.log('Turn success');
             }else{
-              console.log('Turn error:', data.error, '\nData:', data);
+              console.log('Turn error:', data.error);
             }
         })
         .catch(error => {
@@ -195,16 +200,23 @@ function turn(x,y, targetCol, targetRow) {
 
 function loadChat() {
     fetch('/chat')
-        .then(response => response.text()).then(data => {
+        .then(response => response.text())
+        .then(data => {
+            // Load chat content into the container
             document.getElementById('chatContainer').innerHTML = data;
 
-            const script = document.createElement('script');
-            script.src = '/javascript/chat.js';
-            document.body.appendChild(script);
-
+            // Check if the chat script is already loaded
+            if (!document.getElementById('chatScript')) {
+                const script = document.createElement('script');
+                script.src = '/javascript/chat.js';
+                script.id = 'chatScript';
+                script.type = 'module';
+                document.body.appendChild(script);
+            }
         })
         .catch(error => console.error('Error loading chat:', error));
-    }
+}
+
 function initBoard(){
     fetchInitialMap();
     var socket_io = io('http://127.0.0.1:5000');

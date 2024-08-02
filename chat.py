@@ -13,6 +13,7 @@ def init_chat(app):
     socketio.init_app(app)
     app.register_blueprint(chat_blueprint)
 
+#Player send message
 @chat_blueprint.route('/send_message', methods=['POST'])
 def handle_message():
     data = request.json
@@ -23,7 +24,7 @@ def handle_message():
     socketio.emit('message_received', {'name': name, 'message': message}, room=game_code)
     return jsonify({'status': 'Message sent'})
 
-
+#Player join chat room
 @socketio.on('join')
 def on_join(data):
     game_code = data['game_code']
@@ -31,6 +32,7 @@ def on_join(data):
     name = get_name(game_code, request.cookies.get('player_uuid'))
     socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} JOINED"}, room=game_code)
 
+#Player leave chat room
 @socketio.on('leave')
 def on_leave(data):
     game_code = data['game_code']
@@ -38,8 +40,9 @@ def on_leave(data):
     name = get_name(game_code, request.cookies.get('player_uuid'))
     socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} LEFT"}, room=game_code)
 
+#Player want game chat history
 @chat_blueprint.route('/chat')
-def chat_test():
+def chat_history():
     game = Game(code = request.cookies.get('game_code'))
     if not game.code:
         return "Game code not found in cookies", 400
@@ -55,6 +58,7 @@ def get_figure(x, y, map_jso):
             return figure
     return None
 
+# Player want move!
 @chat_blueprint.route('/turn', methods=['POST'])
 def turn():
     data = request.json
@@ -63,7 +67,7 @@ def turn():
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
 
-    print(f"Turn {active_fig} to {turn_to}")
+    print(f"Game {game.code}| figure {active_fig} to {turn_to}")
 
     #TODO to x,y on board?
 
@@ -121,6 +125,7 @@ def turn():
     return jsonify({'error': None})
 
 
+#Player want load map
 @chat_blueprint.route('/get_map')
 def get_map():
     game = Game(code = request.cookies.get('game_code'))

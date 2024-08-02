@@ -1,11 +1,4 @@
-//TODO tohle dát do nějakého jiného souboru, je i v menu.js
-function getCookie(name) {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith(name))
-        ?.split('=')[1];
-    return cookieValue ? decodeURIComponent(cookieValue) : null;
-}
+import { getCookie } from './basic.js';
 
 let socket = io('http://127.0.0.1:5000');
 socket.on('message_received', function (data) {

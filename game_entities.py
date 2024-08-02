@@ -117,6 +117,7 @@ class Game:
 
 
     def connect_player(self, player_uuid, color=None, name=None):
+        new_color=None
         jso = load('users',self.code)
 
         for col in jso['players'].keys():
@@ -130,14 +131,14 @@ class Game:
                 return False
 
             if color is not None and color in jso['colors']:
-                add_new_color = jso['colors'].remove(color) # give player pref_color
+                new_color = jso['colors'].remove(color) # give player pref_color
             else:
-                add_new_color = jso['colors'].pop(0) # give player pref_color
-            jso['players'][add_new_color] = {'uuid': player_uuid, 'name': "Anon"} #TODO add aem to create Game
-            selected = jso['players'][add_new_color]
+                new_color = jso['colors'].pop(0) # give player pref_color
+            jso['players'][new_color] = {'uuid': player_uuid, 'name': "Anon"} #TODO add aem to create Game
+            selected = jso['players'][new_color]
 
         selected['uuid'] = player_uuid
         if name is not None and name != "":
             selected['name'] = name
         save('users', self.code, jso)
-        return True
+        return True, new_color, jso

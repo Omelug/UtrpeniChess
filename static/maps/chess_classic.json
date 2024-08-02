@@ -11,10 +11,10 @@
     "turn": "white",
     "players": {
       "white": {
-        "view": 1
+        "view": 0
       },
       "black": {
-        "view": 3
+        "view": 2
       }
     },
     "figures": {

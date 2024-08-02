@@ -1,4 +1,6 @@
-document.getElementById('playBtn').addEventListener('click', function() {
+import { getCookie } from './basic.js';
+
+document.getElementById('crateGamePlayBtn').addEventListener('click', function() {
     fetch('/create_game', {
         method: 'POST',
         headers: {
@@ -19,14 +21,35 @@ document.getElementById('playBtn').addEventListener('click', function() {
     socket.emit('join', { game_code: gameCode });
 });
 
-function getCookie(name) {
-    const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith(name))
-        ?.split('=')[1]; // Using optional chaining for safety
+document.getElementById('connectGameBtn').addEventListener('click', function() {
+    fetch('/connect_to_game', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            game_code: document.getElementById('gameCode').value,
+            player_name: document.getElementById('playerName').value
+        })
+    }).then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed');
+    }).then(data => {
+        if (data.redirect) {
+            window.location.href = data.redirect;
+        } else {
+            document.getElementById('connectGameError').textContent = data.error;
+            console.error('Error', data.error);
+        }
 
-    return cookieValue ? decodeURIComponent(cookieValue) : null;
-}
+    }).catch(error => {
+        console.log('Error:', error);
+    });
+});
+
+
 const gameCode = getCookie('game_code');
 console.log('Resume code:', gameCode);
 if (gameCode) {

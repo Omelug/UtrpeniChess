@@ -7,7 +7,7 @@ from chat import init_chat
 from game_entities import Game, get_uuid
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 socketio = SocketIO(app)
 init_chat(app)
 
@@ -32,18 +32,19 @@ def index():
 
 def player_connect(game, create_data):
     response = make_response(jsonify({'redirect': url_for('board')}))
-    response.set_cookie('game_code', game.code, samesite='None', secure=True)
+    response.set_cookie('game_code', game.code, samesite='Strict',secure=True)
 
     uuid = request.cookies.get('player_uuid')
     if uuid is None:
         uuid = get_uuid()
-        response.set_cookie('player_uuid', uuid, samesite='None', secure=True)
+        response.set_cookie('player_uuid', uuid, samesite='Strict', secure=True)
 
-    added = game.connect_player(
+    added, color, jso_users = game.connect_player(
         uuid, name=create_data.get('player_name'),
     )
 
     if added:
+        response.set_cookie('view', str(jso_users['view'][color]))
         return response
     return make_response(jsonify({'error': "Game is probably full"}))
 
@@ -57,13 +58,13 @@ def create_game():
 
 @app.route('/connect_to_game', methods=['POST'])
 def connect_to_game():
-    create_data = request.json
-    conn_gam_code = create_data.get('game_code')
+    connect_data = request.json
+    conn_gam_code = connect_data.get('game_code')
 
     if not conn_gam_code or not os.path.exists(f"./games/{conn_gam_code}/"):
         return make_response(jsonify({'error': "Invalid code"}))
     game = Game(conn_gam_code)
-    return player_connect(game, create_data)
+    return player_connect(game, connect_data)
 
 @app.route('/board')
 def board():

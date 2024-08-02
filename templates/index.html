@@ -7,8 +7,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/index.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Šachy plné utrpení!!!!</title>
-    <script src="/javascript/menu.js" defer></script>
+    <script type="module" src="/javascript/menu.js" defer></script>
 </head>
 <body>
     <div id="titleDiv">
@@ -30,7 +31,7 @@
         </div>
 
         <div class="container-row container-setting-menu">
-            <button id="playBtn"> Hrát </button>
+            <button id="crateGamePlayBtn"> Hrát </button>
             <div id="selectMapMapDiv">
                 <select class="selectMapMap">
                     <option value="">Select An Option</option>
@@ -55,6 +56,8 @@
 
            <label for="gameCode">Kód hry:</label><br>
            <input id="gameCode" maxlength="9"><br>
+
+           <button id="connectGameBtn">Připojit se</button>
 
            <p id="connectGameError"><p>
            <p id="resume_code"><p>
