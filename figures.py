@@ -39,13 +39,13 @@ def kill(map_jso, target, socketio=None) -> bool: #killed?
 
 def mview(x, y ,view):
     if view == 0:
-        return -x, -y
+        return x, -y
     if view == 1:
-        return -y, x
+        return y, x
     if view == 2:
-        return y, -x
+        return -x, y
     if view == 3:
-        return x, y
+        return -y, -x
 
 def delta(x, y, map_jso, figure):
     view = map_jso['status']['players'][figure['color']]['view']
@@ -55,12 +55,15 @@ class Pawn(Figure):
     def move(self, to_x, to_y, target=None):
         delta_x, delta_y = delta(to_x, to_y, self.map_jso, self.figure)
         first_step = (delta_y == 2 and self.figure['moved'] == False)
-        if first_step:
-            self.map_jso['status']['figures'][self.id]['moved'] = True
         #print(first_step)
         hungry = ((abs(delta_x) == 1) and delta_y == 1 and kill(self.map_jso, target))
         #print(hungry)
-        return ((delta_x == 0) and (delta_y == 1)) or first_step or hungry
+        print(delta_x, delta_y, first_step, hungry)
+
+        result = ((delta_x == 0) and (delta_y == 1)) or first_step or hungry
+        if result and not self.map_jso['status']['figures'][self.id]['moved']:
+            self.map_jso['status']['figures'][self.id]['moved'] = True
+        return result
 
 
 class Horse(Figure):
