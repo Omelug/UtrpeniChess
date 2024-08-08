@@ -1,6 +1,3 @@
 .idea
-.venv
-venv
-__pycache__
 games
-.vscode
+.venv

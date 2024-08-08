@@ -33,16 +33,19 @@ function transformSvg(figure_id,to_x, to_y) {
     pieceSvg.setAttribute('pos_x', to_x);
     pieceSvg.setAttribute('pos_y', to_y);
     if (pieceSvg) {
-        pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px)`;
+        let viewAngle = (90 * getCookie('view')) % 360; // Ensure the angle stays within 0-359 degrees
+        pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px) rotate(${-viewAngle}deg)`;
     } else {
         console.error(`No SVG found at position (${from_x}, ${from_y})`);
     }
 }
-function removeSvg(x, y) {
+function removeFigure(x, y) {
     const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
     const pieceSvg = document.querySelector(selector);
     if (pieceSvg) {
         pieceSvg.parentNode.removeChild(pieceSvg);
+    } else{
+        console.error(`No SVG found at position (${x}, ${y})`);
     }
 }
 const filterCache = new Map();
@@ -95,12 +98,13 @@ function renderChessboard(data) {
     chessboard.style.height = `${chessboardWidth}px`;
     chessboard.style.position = 'relative';
 
-    let viewAngle = 90 * getCookie('view');
-    viewAngle = viewAngle % 360; // Ensure the angle stays within 0-359 degrees
+
+    let viewAngle = (90 * getCookie('view')) % 360; // Ensure the angle stays within 0-359 degrees
     chessboard.style.transform = `rotate(${viewAngle}deg)`;
 
-    const turnDiv = document.getElementById('turn');
-    turnDiv.textContent = 'Turn: ' + data.status.turn;
+    //TODO const turnDiv = document.getElementById('turn');
+    //TODO turnDiv.textContent = 'Turn: ' + data.status.turn;
+
     for (let row = 0; row < boardSize; row++) {
         for (let col = 0; col < boardSize; col++) {
             const cell = document.createElement('div');
@@ -164,7 +168,7 @@ function renderChessboard(data) {
         const rgb = hexToRgb(colorHex);
         fig_Svg.style.filter = generateFilterValues(rgb);
 
-        fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${figure.y * cellSize}px)`;
+        fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${figure.y * cellSize}px) rotate(${-viewAngle}deg)`;
         chessboard.appendChild(fig_Svg);
     }
 }
@@ -187,7 +191,7 @@ function turn(x,y, targetCol, targetRow) {
         .then(response => response.json())
         .then(data => {
             if(data.error === null){
-                console.log('Turn success');
+                //console.log('Turn success');
             }else{
               console.log('Turn error:', data.error);
             }
@@ -221,9 +225,10 @@ function initBoard(){
     fetchInitialMap();
     var socket_io = io('http://127.0.0.1:5000');
     socket_io.on('turn_move', function (data) {
-        console.log("Valid move")
+        console.log("Valid move");
+        console.log(data.killed);
         if (data.killed) {
-            removeSvg(data.killed.x, data.killed.y);
+            removeFigure(data.killed.x, data.killed.y);
         }
         transformSvg(data.active_fig, data.to.x, data.to.y)
     })

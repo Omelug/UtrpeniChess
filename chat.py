@@ -55,8 +55,8 @@ def get_figure(x, y, map_jso):
     for key in fig_keys:
         figure = map_jso['status']['figures'][key]
         if figure['x'] == x and figure['y'] == y:
-            return figure
-    return None
+            return figure, key
+    return None, None
 
 # Player want move!
 @chat_blueprint.route('/turn', methods=['POST'])
@@ -66,10 +66,6 @@ def turn():
     turn_to = data.get('to')
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
-
-    print(f"Game {game.code}| figure {active_fig} to {turn_to}")
-
-    #TODO to x,y on board?
 
     #his turn?
     map_jso = load('map',game.code)
@@ -86,6 +82,9 @@ def turn():
 
     figure = map_jso['status']['figures'][active_fig]
 
+    print(f"Game {game.code}| figure ({figure['x']};{figure['y']}) to {turn_to}")
+
+
     # his figure?
     if figure is None:
         return jsonify({'error': 'Empty space'})
@@ -93,21 +92,22 @@ def turn():
         return jsonify({'error': f"Not your ({actual_turn}) figure {figure['color']}"})
 
     #attack on his figure?
-    conflict_figure = get_figure(turn_to['x'], turn_to['y'], map_jso)
+    conflict_figure, key = get_figure(turn_to['x'], turn_to['y'], map_jso)
     if conflict_figure is not None and actual_turn == conflict_figure['color']:
         return jsonify({'error': 'Cant attack on your figure'})
 
     figure_class = figures.FIGURE_CLASSES[figure['fig_type']]
     figure_obj = figure_class(active_fig, figure, map_jso)
 
-    killed_copy = copy.deepcopy(conflict_figure)
+    killed = copy.deepcopy(conflict_figure)
     moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure)
     if not moved:
         return jsonify({'error': 'Invalid move'})
 
     response_json = {}
-    if figures.kill(map_jso, conflict_figure):
-        response_json.update({'killed': killed_copy})
+
+    if figures.kill(map_jso, key):
+        response_json.update({'killed': killed})
 
     colors_turn = users_jso['colors_turn']
     current_index = colors_turn.index(actual_turn)

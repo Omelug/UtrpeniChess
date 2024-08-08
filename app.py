@@ -44,7 +44,7 @@ def player_connect(game, create_data):
     )
 
     if added:
-        response.set_cookie('view', str(jso_users['view'][color]))
+        response.set_cookie('view', str(jso_users['view'][color]), samesite='Strict', secure=True)
         return response
     return make_response(jsonify({'error': "Game is probably full"}))
 
