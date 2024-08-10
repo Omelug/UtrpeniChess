@@ -1,7 +1,7 @@
 import os.path
 
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 
 from chat import init_chat
 from game_entities import Game, get_uuid
@@ -28,6 +28,16 @@ def home():
 def index():
     return render_template('index.html')
 
+#Player join to board
+@socketio.on('join')
+def on_join(data):
+    join_room(data['game_code'])
+
+#TODO this is useless now
+#Player leave board
+@socketio.on('leave')
+def on_leave(data):
+    leave_room(data['game_code'])
 
 
 def player_connect(game, create_data):

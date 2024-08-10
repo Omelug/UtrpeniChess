@@ -3,6 +3,7 @@ import { getCookie } from "./basic.js";
 let gameMap = {};
 const chessboard = document.getElementById('chessboard');
 const cellSize = 50;
+let figStyle;
 
 async function fetchInitialMap() {
     try {
@@ -102,8 +103,9 @@ function renderChessboard(data) {
     let viewAngle = (90 * getCookie('view')) % 360; // Ensure the angle stays within 0-359 degrees
     chessboard.style.transform = `rotate(${viewAngle}deg)`;
 
-    //TODO const turnDiv = document.getElementById('turn');
-    //TODO turnDiv.textContent = 'Turn: ' + data.status.turn;
+    //First turn
+    const turnDiv = document.getElementById('turn');
+    turnDiv.textContent = 'Turn: ' + data.status.turn;
 
     for (let row = 0; row < boardSize; row++) {
         for (let col = 0; col < boardSize; col++) {
@@ -158,7 +160,8 @@ function renderChessboard(data) {
         fig_Svg.setAttribute('color', figure.color);
         fig_Svg.style.top ="0";
         fig_Svg.style.left = "0";
-        fig_Svg.style.backgroundImage = `url("../static/figures/${data.start.fig_style}/${figure.fig_type}.svg")`;
+        figStyle = data.start.fig_style;
+        fig_Svg.style.backgroundImage = `url("../static/figures/${figStyle}/${figure.fig_type}.svg")`;
         fig_Svg.style.backgroundSize = 'contain';
         fig_Svg.style.backgroundRepeat = 'no-repeat';
         fig_Svg.style.backgroundPosition = 'center';
@@ -190,10 +193,15 @@ function turn(x,y, targetCol, targetRow) {
         })
         .then(response => response.json())
         .then(data => {
-            if(data.error === null){
-                //console.log('Turn success');
-            }else{
+            if (data.error != null){
               console.log('Turn error:', data.error);
+            }else{
+                if (data.action_type === 'change'){
+                    console.log(data.avaible)
+                    showSelectionWindow(data.avaible, data.id);
+                }else{
+                    console.error("Not Implemented yet")
+                }
             }
         })
         .catch(error => {
@@ -223,15 +231,56 @@ function loadChat() {
 
 function initBoard(){
     fetchInitialMap();
-    var socket_io = io('http://127.0.0.1:5000');
-    socket_io.on('turn_move', function (data) {
-        console.log("Valid move");
-        console.log(data.killed);
+    let socket = io('http://127.0.0.1:5000');
+
+    //set room for board (chat has separated socket) //TODO vyřešit nějak left kdyz hra skonci
+    const gameCode = getCookie('game_code');
+    if (gameCode) {
+        socket.emit('join_chat', { game_code: gameCode });
+    }
+
+    socket.on('fig_action', function (data) {
+        //console.log("Valid move");
+        //console.log(data);
         if (data.killed) {
             removeFigure(data.killed.x, data.killed.y);
         }
-        transformSvg(data.active_fig, data.to.x, data.to.y)
+        if (data.turn != null) {
+            document.getElementById('turn').textContent = 'Turn: ' + data.turn;
+        }
+        if(data.active_fig != null && data.to.x != null && data.to.y != null ){
+            transformSvg(data.active_fig, data.to.x, data.to.y)
+        }
     })
 }
+
+function showSelectionWindow(changeOptions, figureId, toX, toY) {
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.backgroundColor = 'white';
+    modal.style.border = '1px solid black';
+    modal.style.padding = '20px';
+    modal.style.zIndex = '1000';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Select a new figure';
+    modal.appendChild(title);
+
+    changeOptions.forEach(fig_type => {
+        const button = document.createElement('button');
+        button.addEventListener('click', () => {
+
+        });
+        modal.appendChild(button);
+    });
+
+    // Append the modal to the body
+    document.body.appendChild(modal);
+}
+
 document.addEventListener('DOMContentLoaded', initBoard);
 document.addEventListener('DOMContentLoaded', loadChat);
+

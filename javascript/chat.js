@@ -7,10 +7,10 @@ socket.on('message_received', function (data) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight
 });
 
- //set room for chat //TODO vyřešit nějak left kdyz hra skonci
+//set room for chat //TODO vyřešit nějak left kdyz hra skonci
 const gameCode = getCookie('game_code');
 if (gameCode) {
-    socket.emit('join', { game_code: gameCode });
+    socket.emit('join_chat', { game_code: gameCode });
 }
 
 document.getElementById('sendMsg').addEventListener('click', sendMessageFromInput);

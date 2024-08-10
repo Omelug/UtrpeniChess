@@ -1,5 +1,6 @@
 import math
 from abc import ABC, abstractmethod
+import importlib
 
 
 def free_place(x, y, map_jso):
@@ -17,6 +18,10 @@ class Figure(ABC):
     @abstractmethod
     def move(self, to_x, to_y, target):
         return True
+
+    @abstractmethod
+    def after_move(self):
+        return None
 
 
     def free_gcd_path(self, to_x, to_y): #for all figures with symetric move
@@ -59,57 +64,18 @@ def rel_delta(x, y, map_jso, figure):
     view = map_jso['status']['players'][figure['color']]['view']
     return  mview(x - figure['x'], y - figure['y'], view)
 
-class Pawn(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        first_step = (delta_y == 2 and self.figure['moved'] == False)
-        hungry = ((abs(delta_x) == 1) and delta_y == 1 and kill(self.map_jso, target))
-        print(delta_x, delta_y, first_step, hungry)
-
-        result = ((delta_x == 0) and (delta_y == 1)) or first_step or hungry
-        if result and not self.map_jso['status']['figures'][self.id]['moved']:
-            self.map_jso['status']['figures'][self.id]['moved'] = True
-        return result
+def get_fig_class(fig_type: str):
+    try:
+        module = importlib.import_module(f'figure_types.{fig_type}')
+        return getattr(module, fig_type.capitalize())
+    except (ModuleNotFoundError, AttributeError) as e:
+        raise ValueError(f"Unknown figure type: {fig_type} {e}") from e
 
 
-class Horse(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        return (abs(delta_x) == 1 and abs(delta_y) == 2) or (abs(delta_x) == 2 and abs(delta_y) == 1)
-
-
-class Bishop(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        valid_by_type = abs(delta_x) == abs(delta_y)
-        free_path = self.free_gcd_path(to_x, to_y)
-        return valid_by_type and free_path
-
-class Tower(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        free_path = self.free_gcd_path(to_x, to_y)
-        return (delta_x == 0) or (delta_y == 0) and free_path
-
-
-class Queen(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        print(f"{delta_x=} {delta_y=}")
-        free_path = self.free_gcd_path(to_x, to_y)
-        return (abs(delta_x) == abs(delta_y)) or (delta_x == 0) or (delta_y == 0) and free_path
-
-
-class King(Figure):
-    def move(self, to_x, to_y, target=None):
-        delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
-        return (abs(delta_x) <= 1) and (abs(delta_y) <= 1)
-
-FIGURE_CLASSES = {
-    'pawn': Pawn,
-    'king': King,
-    'bishop': Bishop,
-    'tower': Tower,
-    'queen': Queen,
-    'horse': Horse,
-}
+def exists(x, y, map_jso):
+    if map_jso['start']['load_type'] == 'chess_classic':
+        if 0 <= x < map_jso['start']['size'] and 0 <= y < map_jso['start']['size']:
+            return True
+        return False
+    else:
+        raise NotImplementedError("Not implemented for this load type")
