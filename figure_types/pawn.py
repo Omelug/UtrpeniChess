@@ -20,8 +20,7 @@ class Pawn(Figure):
 
     def after_move(self):
         print("EXISTS", exists(self.figure['x'], self.figure['y']-1, self.map_jso))
-        return {"action_type":"change", "avaible":["queen","horse","bishop","tower"]} # TODO to DEBU
+        return {"action_type":"change", "avaible":["queen","horse","bishop","tower"]} #FIXME  to DEBU
         if not exists(self.figure['x'], self.figure['y']-1, self.map_jso):
-            #TODO save user is changiing, cant move woth other figures
             return {"type":"change", "avaible":["queen","horse","bishop","tower"]}
         return None

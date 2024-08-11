@@ -9,7 +9,7 @@ async function fetchInitialMap() {
     try {
         const response = await fetch('/get_map');
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            console.error(`HTTP error! Status: ${response.status}`);
         }
         gameMap = await response.json();
         renderChessboard(gameMap);

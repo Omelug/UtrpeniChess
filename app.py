@@ -3,13 +3,13 @@ import os.path
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
 from flask_socketio import SocketIO, join_room, leave_room
 
-from chat import init_chat
+from board import init_board
 from game_entities import Game, get_uuid
 
 
 app = Flask(__name__, static_folder='static')
 socketio = SocketIO(app)
-init_chat(app)
+init_board(app)
 
 
 @app.route('/favicon.ico')
@@ -86,6 +86,6 @@ def board():
     return response
 
 if __name__ == '__main__':
-    socketio.run(app, host='127.0.0.1', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000)
 
 

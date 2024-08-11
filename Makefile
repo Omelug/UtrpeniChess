@@ -6,7 +6,7 @@ CODE_FILEs = ./*.py ./.venv
 .PHONY: code_to_server
 
 code_to_server: FORCE
-	rsync -avz  $(CODE_FILEs) $(USERNAME)@$(SERVER):$(DEST_DIR)
+	rsync -avzr  --delete ./ $(USERNAME)@$(SERVER):$(DEST_DIR)
 
 venv_init:
 	python3 -m venv .venv

@@ -6,15 +6,15 @@ import figures
 from game_entities import Game, send_message, get_name, load, save
 
 socketio = flask_socketio.SocketIO()
-chat_blueprint = Blueprint('chat', __name__)
+board_blueprint = Blueprint('board', __name__)
 random_int = 0
 
-def init_chat(app):
+def init_board(app):
     socketio.init_app(app)
-    app.register_blueprint(chat_blueprint)
+    app.register_blueprint(board_blueprint)
 
 #Player send message
-@chat_blueprint.route('/send_message', methods=['POST'])
+@board_blueprint.route('/send_message', methods=['POST'])
 def handle_message():
     data = request.json
     message = data.get('message')
@@ -41,7 +41,7 @@ def on_leave(data):
     socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} LEFT"}, room=game_code)
 
 #Player want game chat history
-@chat_blueprint.route('/chat')
+@board_blueprint.route('/chat')
 def chat_history():
     game = Game(code = request.cookies.get('game_code'))
     if not game.code:
@@ -59,7 +59,7 @@ def get_figure(x, y, map_jso):
     return None, None
 
 # Player want move!
-@chat_blueprint.route('/turn', methods=['POST'])
+@board_blueprint.route('/turn', methods=['POST'])
 def turn():
     data = request.json
     active_fig = data.get('id')
@@ -79,12 +79,13 @@ def turn():
     except KeyError:
         return jsonify({'error': f"Not your turn, player {actual_turn} is not here"})
 
-
     figure = map_jso['status']['figures'][active_fig]
 
     print(f"Game {game.code}| figure ({figure['x']};{figure['y']}) to {turn_to}")
 
-    #TODO check if player is chnagina pawn
+    #is someone changing figure?
+    if map_jso['status']['changing']:
+        return jsonify({'error': f"{actual_turn} is changing figure"})
 
     # his figure?
     if figure is None:
@@ -124,16 +125,16 @@ def turn():
     save('users', game.code, users_jso)
 
     # After move (like choose pawn change)
-    after_move_response = figure_obj.after_move()
+    after_move_response = figure_obj.after_move(users=users_jso['players'])
     if after_move_response is not None:
         if after_move_response["action_type"] is "change":
             after_move_response.update({"fig_id":active_fig}) #info for change
+            map_jso['status']['changing'] = True
     else: #nothing else, change turn
         map_jso['status']['turn'] = colors_turn[next_index]
         socketio.emit('fig_action', {'turn': colors_turn[next_index]}, room=game.code)
 
     save('map', game.code, map_jso)
-
 
     response = {'error': None}
     if after_move_response is not None:
@@ -143,7 +144,7 @@ def turn():
 
 
 #Player want load map
-@chat_blueprint.route('/get_map')
+@board_blueprint.route('/get_map')
 def get_map():
     game = Game(code = request.cookies.get('game_code'))
     return jsonify(load('map',game.code))
