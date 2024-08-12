@@ -10,8 +10,9 @@ Client side:
 
 Server side:
     zpřehlednit board.py (rozumně rozdělit)
-    checknout konec hry
-
+    rošáda (kral ktery se nepohl v řadě s vezi, co se nepohla)
+    divné brani pinčlíků
+    checknout konec hrya
 
 Komunikace:
 

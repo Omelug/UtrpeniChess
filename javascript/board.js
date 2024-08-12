@@ -4,6 +4,7 @@ let gameMap = {};
 const chessboard = document.getElementById('chessboard');
 const cellSize = 50;
 let figStyle;
+let socket;
 
 async function fetchInitialMap() {
     try {
@@ -40,6 +41,7 @@ function transformSvg(figure_id,to_x, to_y) {
         console.error(`No SVG found at position (${from_x}, ${from_y})`);
     }
 }
+
 function removeFigure(x, y) {
     const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
     const pieceSvg = document.querySelector(selector);
@@ -197,8 +199,8 @@ function turn(x,y, targetCol, targetRow) {
               console.log('Turn error:', data.error);
             }else{
                 if (data.action_type === 'change'){
-                    console.log(data.avaible)
-                    showSelectionWindow(data.avaible, data.id);
+                    console.log(data)
+                    showSelectionWindow(data.avaible, data.fig_id);
                 }else{
                     console.error("Not Implemented yet")
                 }
@@ -229,10 +231,19 @@ function loadChat() {
         .catch(error => console.error('Error loading chat:', error));
 }
 
+
+function changeSvg(active_fig, fig_type) {
+    const selector = `svg[id="${active_fig}"]`;
+    const pieceSvg = document.querySelector(selector);
+    if (pieceSvg) {
+        pieceSvg.style.backgroundImage = `url("../static/figures/${figStyle}/${fig_type}.svg")`;
+    } else{
+        console.error(`No SVG ${active_fig}`);
+    }
+}
 function initBoard(){
     fetchInitialMap();
-    let socket = io('http://127.0.0.1:5000');
-
+    socket = io('http://127.0.0.1:5000');
     //set room for board (chat has separated socket) //TODO vyřešit nějak left kdyz hra skonci
     const gameCode = getCookie('game_code');
     if (gameCode) {
@@ -248,13 +259,16 @@ function initBoard(){
         if (data.turn != null) {
             document.getElementById('turn').textContent = 'Turn: ' + data.turn;
         }
-        if(data.active_fig != null && data.to.x != null && data.to.y != null ){
+        if(data.active_fig != null && data.to != null){
             transformSvg(data.active_fig, data.to.x, data.to.y)
+        }
+        if (data.change_fig != null) {
+            changeSvg(data.change_fig, data.fig_type)
         }
     })
 }
 
-function showSelectionWindow(changeOptions, figureId, toX, toY) {
+function showSelectionWindow(changeOptions, figureId) {
     const modal = document.createElement('div');
     modal.style.position = 'fixed';
     modal.style.top = '50%';
@@ -271,13 +285,15 @@ function showSelectionWindow(changeOptions, figureId, toX, toY) {
 
     changeOptions.forEach(fig_type => {
         const button = document.createElement('button');
+        button.textContent = fig_type;
         button.addEventListener('click', () => {
-
+            console.log(`Selected figure: ${fig_type}`);
+            document.body.removeChild(modal);
+            socket.emit('figure_selected', { fig_type: fig_type, fig_id: figureId });
         });
         modal.appendChild(button);
     });
 
-    // Append the modal to the body
     document.body.appendChild(modal);
 }
 

@@ -42,19 +42,19 @@ def on_leave(data):
 
 def player_connect(game, create_data):
     response = make_response(jsonify({'redirect': url_for('board')}))
-    response.set_cookie('game_code', game.code, samesite='Strict',secure=True)
+    response.set_cookie('game_code', game.code, samesite='None',secure=True)
 
     uuid = request.cookies.get('player_uuid')
     if uuid is None:
         uuid = get_uuid()
-        response.set_cookie('player_uuid', uuid, samesite='Strict', secure=True)
+        response.set_cookie('player_uuid', uuid, samesite='None', secure=True)
 
     added, color, jso_users = game.connect_player(
         uuid, name=create_data.get('player_name'),
     )
 
     if added:
-        response.set_cookie('view', str(jso_users['view'][color]), samesite='Strict', secure=True)
+        response.set_cookie('view', str(jso_users['view'][color]), samesite='None', secure=True)
         return response
     return make_response(jsonify({'error': "Game is probably full"}))
 

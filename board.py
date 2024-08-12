@@ -58,6 +58,11 @@ def get_figure(x, y, map_jso):
             return figure, key
     return None, None
 
+def next_color(users_jso, map_jso):
+    colors_turn = users_jso['colors_turn']
+    current_turn = map_jso['status']['turn']
+    return colors_turn[(colors_turn.index(current_turn) + 1) % len(colors_turn)]
+
 # Player want move!
 @board_blueprint.route('/turn', methods=['POST'])
 def turn():
@@ -114,25 +119,20 @@ def turn():
     figure['x'] = turn_to['x']
     figure['y'] = turn_to['y']
 
-    # info for change player turn
-    colors_turn = users_jso['colors_turn']
-    current_index = colors_turn.index(actual_turn)
-    next_index = (current_index + 1) % len(colors_turn)
-
     socketio.emit('fig_action',{"active_fig": active_fig, "to": data.get('to')}, room=game.code)
 
     save('map', game.code, map_jso)
     save('users', game.code, users_jso)
 
     # After move (like choose pawn change)
-    after_move_response = figure_obj.after_move(users=users_jso['players'])
+    after_move_response = figure_obj.after_move()
     if after_move_response is not None:
         if after_move_response["action_type"] is "change":
             after_move_response.update({"fig_id":active_fig}) #info for change
             map_jso['status']['changing'] = True
     else: #nothing else, change turn
-        map_jso['status']['turn'] = colors_turn[next_index]
-        socketio.emit('fig_action', {'turn': colors_turn[next_index]}, room=game.code)
+        map_jso['status']['turn'] = next_color(users_jso, map_jso)
+        socketio.emit('fig_action', {'turn': map_jso['status']['turn']}, room=game.code)
 
     save('map', game.code, map_jso)
 
@@ -143,8 +143,34 @@ def turn():
     return jsonify(response)
 
 
+
 #Player want load map
 @board_blueprint.route('/get_map')
 def get_map():
     game = Game(code = request.cookies.get('game_code'))
     return jsonify(load('map',game.code))
+
+
+@socketio.on('figure_selected')
+def handle_figure_selected(data):
+    print(data)
+    fig_id = data['fig_id']
+    fig_type = data['fig_type']
+    game_code = request.cookies.get('game_code')
+
+    map_jso = load('map', game_code)
+    users_jso = load('users', game_code)
+
+    figure = map_jso['status']['figures'].get(fig_id)
+
+    if figure:
+        figure['fig_type'] = fig_type
+
+        map_jso['status']['turn'] = next_color(users_jso, map_jso)
+
+        map_jso['status']['changing'] = False
+        save('map', game_code, map_jso)
+
+        socketio.emit('fig_action', {'change_fig': fig_id, 'fig_type': fig_type}, room=game_code)
+    else:
+        print(f"Figure with id {fig_id} not found")
