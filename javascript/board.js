@@ -250,7 +250,7 @@ function initBoard(){
     //set room for board (chat has separated socket) //TODO vyřešit nějak left kdyz hra skonci
     const gameCode = getCookie('game_code');
     if (gameCode) {
-        socket.emit('join_chat', { game_code: gameCode });
+        socket.emit('join_board', { game_code: gameCode });
     }
 
     socket.on('fig_action', function (data) {

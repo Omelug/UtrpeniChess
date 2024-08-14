@@ -1,6 +1,10 @@
 import math
 from abc import ABC, abstractmethod
 import importlib
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 def free_place(x, y, map_jso):
     """

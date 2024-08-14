@@ -29,8 +29,8 @@ function sendMessageFromInput() {
     }
 }
 
-function sendMessage(essage) {
-    fetch('/send_messmage', {
+function sendMessage(message) {
+    fetch('/send_message', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

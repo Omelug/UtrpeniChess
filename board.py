@@ -1,9 +1,14 @@
 import copy
+import logging
 
 from flask import make_response, render_template, Blueprint, jsonify, request
 import flask_socketio
 import figures
 from game_entities import Game, send_message, get_name, load, save
+
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger(__name__)
 
 socketio = flask_socketio.SocketIO()
 board_blueprint = Blueprint('board', __name__)
@@ -31,6 +36,12 @@ def on_join(data):
     flask_socketio.join_room(game_code)
     name = get_name(game_code, request.cookies.get('player_uuid'))
     socketio.emit('message_received', {'name': 'SERVER', 'message': f"{name} JOINED"}, room=game_code)
+
+@socketio.on('join_board')
+def on_join(data):
+    game_code = data['game_code']
+    flask_socketio.join_room(game_code)
+
 
 #Player leave chat room
 @socketio.on('leave_chat')
@@ -72,7 +83,6 @@ def turn():
     player_uuid = request.cookies.get('player_uuid')
     game = Game(code=request.cookies.get('game_code'))
 
-    #his turn?
     map_jso = load('map',game.code)
     actual_turn = map_jso['status']['turn']
     users_jso = load('users',game.code)
@@ -86,7 +96,7 @@ def turn():
 
     figure = map_jso['status']['figures'][active_fig]
 
-    print(f"Game {game.code}| figure ({figure['x']};{figure['y']}) to {turn_to}")
+    logging.info(f"Game {game.code}| figure ({figure['x']};{figure['y']}) to {turn_to}")
 
     #is someone changing figure?
     if map_jso['status']['changing']:
@@ -154,7 +164,7 @@ def get_map():
 
 @socketio.on('figure_selected')
 def handle_figure_selected(data):
-    print(data)
+    logging.debug(data)
     fig_id = data['fig_id']
     fig_type = data['fig_type']
     game_code = request.cookies.get('game_code')
@@ -174,4 +184,4 @@ def handle_figure_selected(data):
 
         socketio.emit('fig_action', {'change_fig': fig_id, 'fig_type': fig_type}, room=game_code)
     else:
-        print(f"Figure with id {fig_id} not found")
+        logging.error(f"Figure with id {fig_id} not found")
