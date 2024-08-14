@@ -1,5 +1,5 @@
 import os.path
-
+from flask_cors import CORS
 from flask import Flask, render_template, request, redirect, url_for, make_response, send_from_directory, jsonify
 from flask_socketio import SocketIO, join_room, leave_room
 
@@ -8,7 +8,8 @@ from game_entities import Game, get_uuid
 
 
 app = Flask(__name__, static_folder='static')
-socketio = SocketIO(app)
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
+socketio = SocketIO(app,cors_allowed_origins="*")
 init_board(app)
 
 
@@ -42,19 +43,19 @@ def on_leave(data):
 
 def player_connect(game, create_data):
     response = make_response(jsonify({'redirect': url_for('board')}))
-    response.set_cookie('game_code', game.code, samesite='None',secure=True)
+    response.set_cookie('game_code', game.code, samesite='None',secure=False)
 
     uuid = request.cookies.get('player_uuid')
     if uuid is None:
         uuid = get_uuid()
-        response.set_cookie('player_uuid', uuid, samesite='None', secure=True)
+        response.set_cookie('player_uuid', uuid, samesite='None', secure=False)
 
     added, color, jso_users = game.connect_player(
         uuid, name=create_data.get('player_name'),
     )
 
     if added:
-        response.set_cookie('view', str(jso_users['view'][color]), samesite='None', secure=True)
+        response.set_cookie('view', str(jso_users['view'][color]), samesite='None', secure=False)
         return response
     return make_response(jsonify({'error': "Game is probably full"}))
 

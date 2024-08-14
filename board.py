@@ -45,7 +45,7 @@ def on_leave(data):
 def chat_history():
     game = Game(code = request.cookies.get('game_code'))
     if not game.code:
-        return "Game code not found in cookies", 400
+        return "", 400
     chat = load('chat',game.code)
     return make_response(render_template('chat.html', chat=chat))
 
@@ -63,7 +63,7 @@ def next_color(users_jso, map_jso):
     current_turn = map_jso['status']['turn']
     return colors_turn[(colors_turn.index(current_turn) + 1) % len(colors_turn)]
 
-# Player want move!
+
 @board_blueprint.route('/turn', methods=['POST'])
 def turn():
     data = request.json
@@ -103,8 +103,7 @@ def turn():
     if conflict_figure is not None and actual_turn == conflict_figure['color']:
         return jsonify({'error': 'Cant attack on your figure'})
 
-    figure_class = figures.get_fig_class(figure['fig_type'])
-    figure_obj = figure_class(active_fig, figure, map_jso)
+    figure_obj = figures.get_figure_o(active_fig, figure, map_jso)
 
     killed = copy.deepcopy(conflict_figure)
     moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure)
@@ -125,7 +124,7 @@ def turn():
     save('users', game.code, users_jso)
 
     # After move (like choose pawn change)
-    after_move_response = figure_obj.after_move()
+    after_move_response = figure_obj.after_move(socket=socketio, game_code=game.code)
     if after_move_response is not None:
         if after_move_response["action_type"] is "change":
             after_move_response.update({"fig_id":active_fig}) #info for change
@@ -139,7 +138,6 @@ def turn():
     response = {'error': None}
     if after_move_response is not None:
         response.update(after_move_response)
-    print(response)
     return jsonify(response)
 
 
@@ -147,7 +145,10 @@ def turn():
 #Player want load map
 @board_blueprint.route('/get_map')
 def get_map():
-    game = Game(code = request.cookies.get('game_code'))
+    game_code = request.cookies.get('game_code')
+    if game_code is None:
+        return jsonify({'error': 'Game code not found in cookies'}), 400
+    game = Game(code = game_code)
     return jsonify(load('map',game.code))
 
 

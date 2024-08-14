@@ -132,9 +132,9 @@ function renderChessboard(data) {
                     selectedCol = col;
                     selectedRow = row;
                 } else if (targetRow === -1 && targetCol === -1) {
-
-                    turn(selectedCol, selectedRow, col, row);
-
+                    if (selectedRow !== targetRow || selectedCol !== targetRow) {
+                        turn(selectedCol, selectedRow, col, row);
+                    }
                     const previousSelectedCell = document.querySelector('.cell.selected');
                     if (previousSelectedCell) {
                         previousSelectedCell.style.background = '';
@@ -198,11 +198,14 @@ function turn(x,y, targetCol, targetRow) {
             if (data.error != null){
               console.log('Turn error:', data.error);
             }else{
-                if (data.action_type === 'change'){
-                    console.log(data)
-                    showSelectionWindow(data.avaible, data.fig_id);
-                }else{
-                    console.error("Not Implemented yet")
+                if (data.action_type) {
+                    if (data.action_type === 'change') {
+                        console.log(data)
+                        showSelectionWindow(data.avaible, data.fig_id);
+                    } else {
+                        console.error(data)
+                        console.error("Not Implemented yet")
+                    }
                 }
             }
         })
@@ -243,7 +246,7 @@ function changeSvg(active_fig, fig_type) {
 }
 function initBoard(){
     fetchInitialMap();
-    socket = io('http://127.0.0.1:5000');
+    socket = io();
     //set room for board (chat has separated socket) //TODO vyřešit nějak left kdyz hra skonci
     const gameCode = getCookie('game_code');
     if (gameCode) {

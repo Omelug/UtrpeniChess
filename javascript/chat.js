@@ -1,6 +1,6 @@
 import { getCookie } from './basic.js';
 
-let socket = io('http://127.0.0.1:5000');
+let socket = io();
 socket.on('message_received', function (data) {
     let messagesDiv = document.getElementById('chatWindow');
     messagesDiv.innerHTML += '<p class="msgP"><b>' + data.name + ': </b>' + data.message + '</p>';
@@ -29,8 +29,8 @@ function sendMessageFromInput() {
     }
 }
 
-function sendMessage(message) {
-    fetch('/send_message', {
+function sendMessage(essage) {
+    fetch('/send_messmage', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
