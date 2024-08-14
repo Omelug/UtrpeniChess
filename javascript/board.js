@@ -133,6 +133,7 @@ function renderChessboard(data) {
                     selectedRow = row;
                 } else if (targetRow === -1 && targetCol === -1) {
                     if (selectedRow !== targetRow || selectedCol !== targetRow) {
+                        console.log("Try ", selectedCol, selectedRow," to ", col, row)
                         turn(selectedCol, selectedRow, col, row);
                     }
                     const previousSelectedCell = document.querySelector('.cell.selected');
