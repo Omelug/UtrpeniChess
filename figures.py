@@ -51,11 +51,11 @@ class Figure(ABC):
         self.map_jso = map_jso
 
     @abstractmethod
-    def move(self, to_x:int, to_y:int, target: dict, realize=True) -> bool:
+    def move(self, to_x:int, to_y:int, realize=True, **kwargs) -> bool:
         """
         :param to_x:
         :param to_y:
-        :param target:
+        :param kwargs: target, socketio
         :param realize: save changes for figures changes
         :return: if move is valid
         """
@@ -117,7 +117,7 @@ class Figure(ABC):
 
             i += 1
 
-def kill(map_jso, target_key, realize=True, socketio=None) -> bool: #can be killed?
+def kill(map_jso, target_key, realize=True) -> bool: #can be killed?
     if target_key is None:
         return False
     if realize:
@@ -128,6 +128,9 @@ def kill(map_jso, target_key, realize=True, socketio=None) -> bool: #can be kill
     return True
 
 def mview(x, y ,view):
+    """
+    convert player view to absolute view
+    """
     if view == 0:
         return x, -y
     if view == 1:
@@ -149,12 +152,12 @@ def get_fig_class(fig_type: str):
         raise ValueError(f"Unknown figure type: {fig_type} {e}") from e
 
 
-def exists(x, y, map_jso):
+def exists(x, y, map_jso)->bool: #exist lace on the board?
     if map_jso['start']['load_type'] == 'chess_classic':
         return 0 <= x < map_jso['start']['size'] and 0 <= y < map_jso['start']['size']
     else:
         raise NotImplementedError("Not implemented for this load type")
 
 
-def signum(n):
+def signum(n) -> 0|1|-1:
     return 0 if n == 0 else 1 if n > 0 else -1

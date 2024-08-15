@@ -8,6 +8,7 @@
     "size": 8
   },
   "status": {
+    "en_passant": null,
     "changing": false,
     "turn": "white",
     "players": {

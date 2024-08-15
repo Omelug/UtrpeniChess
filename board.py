@@ -62,17 +62,27 @@ def chat_history():
 
 
 def get_figure(x, y, map_jso):
-    fig_keys= map_jso['status']['figures'].keys()
-    for key in fig_keys:
-        figure = map_jso['status']['figures'][key]
+    for key, figure in map_jso['status']['figures'].items():
         if figure['x'] == x and figure['y'] == y:
-            return figure, key
+            return key, figure
     return None, None
 
 def next_color(users_jso, map_jso):
     colors_turn = users_jso['colors_turn']
     current_turn = map_jso['status']['turn']
     return colors_turn[(colors_turn.index(current_turn) + 1) % len(colors_turn)]
+
+TURN_STORAGE = {}
+#TODO This maybe move to map specific classes
+
+def turn_start(*args, **kwargs):
+    TURN_STORAGE.update({"en_passant":kwargs.get('map_jso')['status']['en_passant']})
+    print(TURN_STORAGE)
+
+def turn_end(*args, **kwargs):
+    if kwargs.get('moved'):
+        if kwargs.get('map_jso')['status']['en_passant'] == TURN_STORAGE.get("en_passant"):
+            kwargs.get('map_jso')['status']['en_passant'] = None
 
 
 @board_blueprint.route('/turn', methods=['POST'])
@@ -86,6 +96,8 @@ def turn():
     map_jso = load('map',game.code)
     actual_turn = map_jso['status']['turn']
     users_jso = load('users',game.code)
+
+    turn_start(map_jso=map_jso)
 
     #his turn?
     try:
@@ -109,26 +121,26 @@ def turn():
         return jsonify({'error': f"Not your ({actual_turn}) figure {figure['color']}"})
 
     #attack on his figure?
-    conflict_figure, key = get_figure(turn_to['x'], turn_to['y'], map_jso)
+    conflict_id, conflict_figure = get_figure(turn_to['x'], turn_to['y'], map_jso)
     if conflict_figure is not None and actual_turn == conflict_figure['color']:
         return jsonify({'error': 'Cant attack on your figure'})
 
     figure_obj = figures.get_figure_o(active_fig, figure, map_jso)
 
-    killed = copy.deepcopy(conflict_figure)
-    moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure)
+    moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure,socketio=socketio)
     if not moved:
         return jsonify({'error': 'Invalid move'})
 
 
-    if figures.kill(map_jso, key):
-        socketio.emit('fig_action', {'killed': killed})
+    if figures.kill(map_jso, conflict_id):
+        socketio.emit('fig_action', {'killed': conflict_id})
 
 
     figure['x'] = turn_to['x']
     figure['y'] = turn_to['y']
 
     socketio.emit('fig_action',{"active_fig": active_fig, "to": data.get('to')}, room=game.code)
+    turn_end(moved=moved,map_jso=map_jso)
 
     save('map', game.code, map_jso)
     save('users', game.code, users_jso)

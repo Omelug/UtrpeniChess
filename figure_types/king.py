@@ -7,7 +7,8 @@ class King(Figure):
     def __init__(self, figure_id, figure, map_jso):
         super().__init__(figure_id, figure, map_jso)
         self.castling = None
-    def move(self, to_x, to_y, target=None, realize=True):
+
+    def move(self, to_x:int, to_y:int, realize=True, **kwargs):
         delta_x, delta_y = rel_delta(to_x, to_y, self.map_jso, self.figure)
         one_step = (abs(delta_x) <= 1) and (abs(delta_y) <= 1)
         castling =  self.figure['moved'] == False and abs(delta_x) == 2 and delta_y == 0

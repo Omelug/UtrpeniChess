@@ -41,14 +41,12 @@ function transformSvg(figure_id,to_x, to_y) {
         console.error(`No SVG found at position (${from_x}, ${from_y})`);
     }
 }
-
-function removeFigure(x, y) {
-    const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
-    const pieceSvg = document.querySelector(selector);
+function removeFigureById(kill_id) {
+    const pieceSvg = document.querySelector(`svg[id="${kill_id}"]`);
     if (pieceSvg) {
         pieceSvg.parentNode.removeChild(pieceSvg);
     } else{
-        console.error(`No SVG found at position (${x}, ${y})`);
+        console.error(`No SVG found at position (${x}, ${y}) for kill_id ${kill_id}`);
     }
 }
 const filterCache = new Map();
@@ -133,7 +131,7 @@ function renderChessboard(data) {
                     selectedRow = row;
                 } else if (targetRow === -1 && targetCol === -1) {
                     if (selectedRow !== targetRow || selectedCol !== targetRow) {
-                        console.log("Try ", selectedCol, selectedRow," to ", col, row)
+                        //console.log("Try ", selectedCol, selectedRow," to ", col, row)
                         turn(selectedCol, selectedRow, col, row);
                     }
                     const previousSelectedCell = document.querySelector('.cell.selected');
@@ -258,7 +256,7 @@ function initBoard(){
         //console.log("Valid move");
         //console.log(data);
         if (data.killed) {
-            removeFigure(data.killed.x, data.killed.y);
+            removeFigureById(data.killed);
         }
         if (data.turn != null) {
             document.getElementById('turn').textContent = 'Turn: ' + data.turn;
