@@ -9,9 +9,7 @@ let socket;
 async function fetchInitialMap() {
     try {
         const response = await fetch('/get_map');
-        if (!response.ok) {
-            console.error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         gameMap = await response.json();
         renderChessboard(gameMap);
     } catch (error) {
@@ -19,42 +17,32 @@ async function fetchInitialMap() {
     }
 }
 function hexToRgb(hex) {
-    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => r + r + g + g + b + b);
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+    return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
 }
 
 function transformSvg(figure_id,to_x, to_y) {
-    const selector = `svg[id="${figure_id}"]`;
-    const pieceSvg = document.querySelector(selector);
-    pieceSvg.setAttribute('pos_x', to_x);
-    pieceSvg.setAttribute('pos_y', to_y);
+    const pieceSvg = document.querySelector(`svg[id="${figure_id}"]`);
     if (pieceSvg) {
-        let viewAngle = (90 * getCookie('view')) % 360; // Ensure the angle stays within 0-359 degrees
+        pieceSvg.setAttribute('pos_x', to_x);
+        pieceSvg.setAttribute('pos_y', to_y);
+        let viewAngle = (90 * getCookie('view')) % 360;
         pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px) rotate(${-viewAngle}deg)`;
     } else {
-        console.error(`No SVG found at position (${from_x}, ${from_y})`);
+        console.error(`No SVG found for figure_id ${figure_id}`);
     }
 }
 function removeFigureById(kill_id) {
     const pieceSvg = document.querySelector(`svg[id="${kill_id}"]`);
-    if (pieceSvg) {
-        pieceSvg.parentNode.removeChild(pieceSvg);
-    } else{
-        console.error(`No SVG found at position (${x}, ${y}) for kill_id ${kill_id}`);
-    }
+    if (pieceSvg) pieceSvg.remove();
+    else console.error(`No SVG found for kill_id ${kill_id}`);
 }
 const filterCache = new Map();
+//TODO all these colors fix somehow
 function generateFilterValues(rgb) {
     const rgbKey = `${rgb.r},${rgb.g},${rgb.b}`;
-    if (filterCache.has(rgbKey)) {
-        return filterCache.get(rgbKey);
-    }
+    if (filterCache.has(rgbKey)) return filterCache.get(rgbKey);
     const { r, g, b } = rgb;
     const sepia = 1;
     const rgbToHsl = (r, g, b) => {
@@ -79,12 +67,7 @@ function generateFilterValues(rgb) {
     };
 
     const [h, s, l] = rgbToHsl(r, g, b);
-    const hueRotateValue = h;
-    const saturateValue = s * 100;
-    const brightnessValue = l * 2;
-    const contrastValue = 1 + (l - 0.5) * 2;
-
-    const filterValues = `sepia(${sepia}) saturate(${saturateValue}%) hue-rotate(${hueRotateValue}deg) brightness(${brightnessValue}) contrast(${contrastValue})`;
+    const filterValues = `sepia(${sepia}) saturate(${s * 100}%) hue-rotate(${h}deg) brightness(${l * 2}) contrast(${1 + (l - 0.5) * 2})`;
     filterCache.set(rgbKey, filterValues);
     return filterValues;
 }
@@ -100,28 +83,20 @@ function renderChessboard(data) {
     chessboard.style.position = 'relative';
 
 
-    let viewAngle = (90 * getCookie('view')) % 360; // Ensure the angle stays within 0-359 degrees
+    let viewAngle = (90 * getCookie('view')) % 360;
     chessboard.style.transform = `rotate(${viewAngle}deg)`;
 
-    //First turn
-    const turnDiv = document.getElementById('turn');
-    turnDiv.textContent = 'Turn: ' + data.status.turn;
+    //First turn label
+    document.getElementById('turn').textContent = 'Turn: ' + data.status.turn;
 
     for (let row = 0; row < boardSize; row++) {
         for (let col = 0; col < boardSize; col++) {
             const cell = document.createElement('div');
-            cell.classList.add('cell');
-            cell.classList.add('cell');
+            cell.classList.add('cell', (row + col) % 2 === 0 ? 'light' : 'dark');
             cell.setAttribute('cell_x', col);
             cell.setAttribute('cell_y', row);
             cell.style.width = `${cellSize}px`;
             cell.style.height = `${cellSize}px`;
-
-            if ((row + col) % 2 === 0) {
-                cell.classList.add('light');
-            } else {
-                cell.classList.add('dark');
-            }
             chessboard.appendChild(cell);
             cell.addEventListener('click', () => {
                 if (selectedRow === -1 && selectedCol === -1) {
@@ -130,6 +105,8 @@ function renderChessboard(data) {
                     selectedCol = col;
                     selectedRow = row;
                 } else if (targetRow === -1 && targetCol === -1) {
+                    //Basic check for less server calls
+                    // SAme check are in python for security reasons
                     if (selectedRow !== targetRow || selectedCol !== targetRow) {
                         //console.log("Try ", selectedCol, selectedRow," to ", col, row)
                         turn(selectedCol, selectedRow, col, row);
@@ -139,10 +116,7 @@ function renderChessboard(data) {
                         previousSelectedCell.style.background = '';
                         previousSelectedCell.classList.remove('selected');
                     }
-                    selectedRow = -1;
-                    selectedCol = -1;
-                    targetRow = -1;
-                    targetCol = -1;
+                    selectedRow = selectedCol = targetRow = targetCol = -1;
                 }
             });
         }
@@ -168,8 +142,7 @@ function renderChessboard(data) {
         fig_Svg.style.backgroundPosition = 'center';
         fig_Svg.style.pointerEvents = 'none';
 
-        const colorHex = data.start.colors[figure.color];
-        const rgb = hexToRgb(colorHex);
+        const rgb = hexToRgb(data.start.colors[figure.color]);
         fig_Svg.style.filter = generateFilterValues(rgb);
 
         fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${figure.y * cellSize}px) rotate(${-viewAngle}deg)`;
@@ -178,13 +151,9 @@ function renderChessboard(data) {
 }
 
 function turn(x,y, targetCol, targetRow) {
-    const selector = `svg[pos_x="${x}"][pos_y="${y}"]`;
-    const figureSvg = document.querySelector(selector);
-    if (figureSvg != null) {
-        const postData = {
-            id: figureSvg.id,
-            to: { x: targetCol, y: targetRow },
-        };
+    const figureSvg = document.querySelector(`svg[pos_x="${x}"][pos_y="${y}"]`);
+    if (figureSvg) {
+        const postData = { id: figureSvg.id, to: { x: targetCol, y: targetRow } }
         fetch('/turn', {
             method: 'POST',
             headers: {
@@ -194,18 +163,10 @@ function turn(x,y, targetCol, targetRow) {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.error != null){
-              console.log('Turn error:', data.error);
-            }else{
-                if (data.action_type) {
-                    if (data.action_type === 'change') {
-                        console.log(data)
-                        showSelectionWindow(data.avaible, data.fig_id);
-                    } else {
-                        console.error(data)
-                        console.error("Not Implemented yet")
-                    }
-                }
+            if (data.error) console.log('Turn error:', data.error);
+            else if (data.action_type) {
+                if (data.action_type === 'change') showSelectionWindow(data.avaible, data.fig_id);
+                else console.error("Not Implemented yet");
             }
         })
         .catch(error => {
@@ -218,7 +179,6 @@ function loadChat() {
     fetch('/chat')
         .then(response => response.text())
         .then(data => {
-            // Load chat content into the container
             document.getElementById('chatContainer').innerHTML = data;
 
             // Check if the chat script is already loaded
@@ -235,39 +195,24 @@ function loadChat() {
 
 
 function changeSvg(active_fig, fig_type) {
-    const selector = `svg[id="${active_fig}"]`;
-    const pieceSvg = document.querySelector(selector);
-    if (pieceSvg) {
-        pieceSvg.style.backgroundImage = `url("../static/figures/${figStyle}/${fig_type}.svg")`;
-    } else{
-        console.error(`No SVG ${active_fig}`);
-    }
+    const pieceSvg = document.querySelector(`svg[id="${active_fig}"]`);
+    if (pieceSvg) pieceSvg.style.backgroundImage = `url("../static/figures/${figStyle}/${fig_type}.svg")`;
+    else console.error(`No SVG ${active_fig}`);
 }
+
 function initBoard(){
     fetchInitialMap();
     socket = io();
     //set room for board (chat has separated socket) //TODO vyřešit nějak left kdyz hra skonci
     const gameCode = getCookie('game_code');
-    if (gameCode) {
-        socket.emit('join_board', { game_code: gameCode });
-    }
+    if (gameCode) socket.emit('join_board', { game_code: gameCode });
 
     socket.on('fig_action', function (data) {
-        //console.log("Valid move");
-        //console.log(data);
-        if (data.killed) {
-            removeFigureById(data.killed);
-        }
-        if (data.turn != null) {
-            document.getElementById('turn').textContent = 'Turn: ' + data.turn;
-        }
-        if(data.active_fig != null && data.to != null){
-            transformSvg(data.active_fig, data.to.x, data.to.y)
-        }
-        if (data.change_fig != null) {
-            changeSvg(data.change_fig, data.fig_type)
-        }
-    })
+        if (data.killed) removeFigureById(data.killed);
+        if (data.turn != null) document.getElementById('turn').textContent = 'Turn: ' + data.turn;
+        if (data.active_fig != null && data.to != null) transformSvg(data.active_fig, data.to.x, data.to.y);
+        if (data.change_fig != null) changeSvg(data.change_fig, data.fig_type);
+    });
 }
 
 function showSelectionWindow(changeOptions, figureId) {
@@ -295,7 +240,6 @@ function showSelectionWindow(changeOptions, figureId) {
         });
         modal.appendChild(button);
     });
-
     document.body.appendChild(modal);
 }
 

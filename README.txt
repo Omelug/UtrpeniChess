@@ -10,11 +10,11 @@ Client side:
 
 Server side:
     zpřehlednit board.py (rozumně rozdělit)
-    divné brani pinčlíků
-    checknout konec hry
+    check end of the game
+    vyřešit nějak ty barvy
     PAT
     checknout šach
-    lepší debuggin
+    lepší debuggin messages
 
 Komunikace:
 

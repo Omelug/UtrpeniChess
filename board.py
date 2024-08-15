@@ -140,7 +140,7 @@ def turn():
     figure['y'] = turn_to['y']
 
     socketio.emit('fig_action',{"active_fig": active_fig, "to": data.get('to')}, room=game.code)
-    turn_end(moved=moved,map_jso=map_jso)
+    turn_end(moved=moved,map_jso=map_jso,turn=actual_turn)
 
     save('map', game.code, map_jso)
     save('users', game.code, users_jso)
