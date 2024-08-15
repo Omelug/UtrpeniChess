@@ -1,4 +1,4 @@
-/*/Board, but chan is in chat.css */
+/*/Board, chat is in chat.css */
 
 body {
     display: grid;
@@ -39,9 +39,9 @@ body {
     width: 80%;
     margin: 5px;
     padding: 2px 10px;
-    display: flex; /* Flexbox layout */
-    justify-content: space-between; /* Space out items to fill the container */
-    align-items: center; /* Center items vertically */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 20px;
     box-shadow: 6px 6px 15px -4px black;
     color: white;

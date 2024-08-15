@@ -183,17 +183,13 @@ def handle_figure_selected(data):
 
     map_jso = load('map', game_code)
     users_jso = load('users', game_code)
-
     figure = map_jso['status']['figures'].get(fig_id)
 
     if figure:
         figure['fig_type'] = fig_type
-
         map_jso['status']['turn'] = next_color(users_jso, map_jso)
-
         map_jso['status']['changing'] = False
         save('map', game_code, map_jso)
-
         socketio.emit('fig_action', {'change_fig': fig_id, 'fig_type': fig_type}, room=game_code)
     else:
         logging.error(f"Figure with id {fig_id} not found")
