@@ -17,7 +17,6 @@ class King(Figure):
                 return False
             tower_id = self.free_gcd_path(to_x=to_x,to_y= to_y, to="tower", not_checked=True, check_exlude=self.figure['color'])
 
-
             #invalid tower for castling?
             if not tower_id:
                 return False
@@ -32,13 +31,9 @@ class King(Figure):
                 abs_d_x, abs_d_y = abs_delta(to_x, to_y, self.figure)
 
                 tower['x'] = king['x'] + figures.signum(abs_d_x)
-                #tower['y'] = king['y'] + math.copysign(1, abs_d_y)
                 tower['moved'] = True
                 king['moved'] = True
                 self.castling = tower_id
-
-
-
         return one_step or castling
 
     def after_move(self, **kwargs):
@@ -47,7 +42,7 @@ class King(Figure):
 
             game_code = kwargs.get('game_code')
             socketio = kwargs.get('socket')
-            if game_code is None and socketio is None:
+            if game_code is None or socketio is None:
                 raise ValueError("game_code and socketio must be provided")
+
             socketio.emit('fig_action',{"active_fig": self.castling, "to": {'x': tower['x'],'y': tower['y']}}, room=game_code)
-            return None

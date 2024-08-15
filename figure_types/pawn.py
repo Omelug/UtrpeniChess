@@ -1,8 +1,6 @@
 import logging
-
 import figures
 from figures import Figure, rel_delta, free_place, kill, exists, abs_delta
-
 
 class Pawn(Figure):
     def move(self, to_x, to_y, realize=True, **kwargs):
