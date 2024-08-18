@@ -28,7 +28,7 @@ function transformSvg(figure_id,to_x, to_y) {
         pieceSvg.setAttribute('pos_x', to_x);
         pieceSvg.setAttribute('pos_y', to_y);
         let viewAngle = (90 * getCookie('view')) % 360;
-        pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${to_y * cellSize}px) rotate(${-viewAngle}deg)`;
+        pieceSvg.style.transform = `translate(${to_x * cellSize}px, ${(boardSize-1-to_y) * cellSize}px) rotate(${-viewAngle}deg)`;
     } else {
         console.error(`No SVG found for figure_id ${figure_id}`);
     }
@@ -73,9 +73,11 @@ function generateFilterValues(rgb) {
 }
 
 let selectedRow = -1, selectedCol = -1, targetRow = -1, targetCol = -1;
+
+let boardSize;
 function renderChessboard(data) {
     chessboard.innerHTML = '';
-    const boardSize = data.start.size;
+    boardSize = data.start.size;
     const chessboardWidth = boardSize * cellSize;
 
     chessboard.style.width = `${chessboardWidth}px`;
@@ -89,7 +91,7 @@ function renderChessboard(data) {
     //First turn label
     document.getElementById('turn').textContent = 'Turn: ' + data.status.turn;
 
-    for (let row = 0; row < boardSize; row++) {
+    for (let row = boardSize-1; row >= 0; row--) {
         for (let col = 0; col < boardSize; col++) {
             const cell = document.createElement('div');
             cell.classList.add('cell', (row + col) % 2 === 0 ? 'light' : 'dark');
@@ -105,8 +107,7 @@ function renderChessboard(data) {
                     selectedCol = col;
                     selectedRow = row;
                 } else if (targetRow === -1 && targetCol === -1) {
-                    //Basic check for less server calls
-                    // SAme check are in python for security reasons
+                    //Basic check for less server calls, same check are in python for security reasons
                     if (selectedRow !== targetRow || selectedCol !== targetRow) {
                         //console.log("Try ", selectedCol, selectedRow," to ", col, row)
                         turn(selectedCol, selectedRow, col, row);
@@ -145,7 +146,7 @@ function renderChessboard(data) {
         const rgb = hexToRgb(data.start.colors[figure.color]);
         fig_Svg.style.filter = generateFilterValues(rgb);
 
-        fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${figure.y * cellSize}px) rotate(${-viewAngle}deg)`;
+        fig_Svg.style.transform = `translate(${figure.x * cellSize}px, ${(boardSize-1-figure.y) * cellSize}px) rotate(${-viewAngle}deg)`;
         chessboard.appendChild(fig_Svg);
     }
 }
@@ -200,6 +201,25 @@ function changeSvg(active_fig, fig_type) {
     else console.error(`No SVG ${active_fig}`);
 }
 
+function actionButtonsInit() {
+        const giveUpBtn = document.getElementById('giveUpBtn');
+        const alertBoard = document.getElementById('alertBoard');
+
+        giveUpBtn.addEventListener('click', function() {
+            fetch('/give_up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin'
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alertBoard.textContent = 'Error: Could not give up.';
+            });
+        });
+    }
+
 function initBoard(){
     fetchInitialMap();
     socket = io();
@@ -213,6 +233,9 @@ function initBoard(){
         if (data.active_fig != null && data.to != null) transformSvg(data.active_fig, data.to.x, data.to.y);
         if (data.change_fig != null) changeSvg(data.change_fig, data.fig_type);
     });
+
+    actionButtonsInit();
+
 }
 
 function showSelectionWindow(changeOptions, figureId) {

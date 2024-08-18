@@ -15,8 +15,9 @@ def free_place(x, y, map_jso):
     """
     return all(figure['x'] != x or figure['y'] != y for figure in map_jso['status']['figures'].values())
 
-def get_figure_o(active_fig, figure, map_jso):
-    return get_fig_class(figure['fig_type'])(active_fig, figure, map_jso)
+def get_figure_o(fig_id, map_jso):
+    figure_json = map_jso['status']['figures'][fig_id]
+    return get_fig_class(figure_json['fig_type'])(fig_id, figure_json, map_jso)
 
 #def checked(x, y, map_jso, color_exclude=None):
 #    return any((figure['color'] != color_exclude and color_exclude, get_figure_o(fig_id, figure, map_jso).move(to_x=x,to_y=y,realize=False)) for fig_id, figure in map_jso['status']['figures'].items())
@@ -29,7 +30,7 @@ def checked(x, y, map_jso, color_exclude=None):
 
         #print(f"Figure ID: {x},{y}")
         #print(figure['color'] ,"   ", color_exclude)
-        result = get_figure_o(fig_id, figure, map_jso).move(to_x=int(x), to_y=int(y), realize=False)
+        result = get_figure_o(fig_id, map_jso).move(to_x=int(x), to_y=int(y), realize=False)
         if result:
             #print(f"Figure ID: {fig_id}, Figure: {figure}, Move Result: {result}")
             return True
@@ -117,28 +118,39 @@ class Figure(ABC):
 
             i += 1
 
-def kill(map_jso, target_key, realize=True) -> bool: #can be killed?
-    if target_key is None:
+def kill(map_jso, target_id, realize=True) -> bool: #can be killed?
+    if target_id is None:
         return False
     if realize:
         figures = (map_jso['status']['figures'])
-        map_jso['status']['figures'] = {key:value
-                                        for key, value in figures.items()
-                                        if key != target_key}
+        if map_jso['status']['figures'][target_id]['fig_type'] == "king":
+            color = map_jso['status']['figures'][target_id]['color']
+            map_jso['status']['game_over'] = {'color':color,'message':f"{color} king is dead"}
+        map_jso['status']['figures'] = {key:value for key, value in figures.items() if key != target_key}
+
     return True
+
+def matrix_tr(x:int, y:int, matrix:list):
+    new_x = matrix[0][0] * x + matrix[0][1] * y
+    new_y = matrix[1][0] * x + matrix[1][1] * y
+    return new_x, new_y
 
 def mview(x, y ,view):
     """
     convert player view to absolute view
     """
     if view == 0:
-        return x, -y
+        return matrix_tr(x, y, [[1,0],[0,1]])
+        #return x, -y
     if view == 1:
-        return y, x
+        return matrix_tr(x, y, [[0, -1], [1, 0]])
+        #return y, x
     if view == 2:
-        return -x, y
+        return matrix_tr(x, y, [[-1, 0], [0, -1]])
+        #return -x, y
     if view == 3:
-        return -y, -x
+        return matrix_tr(x, y, [[0, 1], [-1, 0]])
+        #return -y, -x
 
 def rel_delta(x, y, map_jso, figure):
     view = map_jso['status']['players'][figure['color']]['view']
@@ -151,13 +163,11 @@ def get_fig_class(fig_type: str):
     except (ModuleNotFoundError, AttributeError) as e:
         raise ValueError(f"Unknown figure type: {fig_type} {e}") from e
 
-
 def exists(x, y, map_jso)->bool: #exist lace on the board?
     if map_jso['start']['load_type'] == 'chess_classic':
         return 0 <= x < map_jso['start']['size'] and 0 <= y < map_jso['start']['size']
     else:
         raise NotImplementedError("Not implemented for this load type")
-
 
 def signum(n) -> 0|1|-1:
     return 0 if n == 0 else 1 if n > 0 else -1

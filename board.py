@@ -1,11 +1,8 @@
-import copy
 import logging
-
 from flask import make_response, render_template, Blueprint, jsonify, request
 import flask_socketio
 import figures
 from game_entities import Game, send_message, get_name, load, save
-
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -85,6 +82,18 @@ def turn_end(*args, **kwargs):
             kwargs.get('map_jso')['status']['en_passant'] = None
 
 
+
+@board_blueprint.route('/give_up', methods=['POST'])
+def give_up():
+    player_uuid = request.cookies.get('player_uuid')
+    game = Game(code=request.cookies.get('game_code'))
+    users_jso = load('users', game.code)
+
+    color = [color for color in users_jso['players'].keys() if player_uuid == users_jso['players'][color]['uuid']][0]
+    socketio.emit('message_received', {'name': 'SERVER', 'message': f"GAME OVER - {color} is over"}, room=game.code)
+    #TODo check if no player left, if last -> win
+    return jsonify({'status': 'Game over'})
+
 @board_blueprint.route('/turn', methods=['POST'])
 def turn():
     data = request.json
@@ -125,7 +134,7 @@ def turn():
     if conflict_figure is not None and actual_turn == conflict_figure['color']:
         return jsonify({'error': 'Cant attack on your figure'})
 
-    figure_obj = figures.get_figure_o(active_fig, figure, map_jso)
+    figure_obj = figures.get_figure_o(active_fig, map_jso)
 
     moved = figure_obj.move(to_x=turn_to['x'], to_y=turn_to['y'], target=conflict_figure,socketio=socketio)
     if not moved:
@@ -140,17 +149,25 @@ def turn():
     figure['y'] = turn_to['y']
 
     socketio.emit('fig_action',{"active_fig": active_fig, "to": data.get('to')}, room=game.code)
-    turn_end(moved=moved,map_jso=map_jso,turn=actual_turn)
 
     save('map', game.code, map_jso)
     save('users', game.code, users_jso)
+
+    turn_end(moved=moved, map_jso=map_jso, turn=actual_turn)
+
+    #Game over?
+    #find if any king is dead
+    if map_jso['status'].get('game_over') is not None:
+        #socketio.emit('game_over', map_jso['status']['game_over'], room=game.code) #TODO
+        socketio.emit('message_received', {'name': 'SERVER', 'message': f"GAME OVER {map_jso['status']['game_over'].get('message')}"}, room=game.code)
+    map_jso['status']['game_over'] = None
 
     # After move (like choose pawn change)
     after_move_response = figure_obj.after_move(socket=socketio, game_code=game.code)
     if after_move_response is not None:
         if after_move_response["action_type"] is "change":
             after_move_response.update({"fig_id":active_fig}) #info for change
-            map_jso['status']['changing'] = True
+            map_jso['status ']['changing'] = True
     else: #nothing else, change turn
         map_jso['status']['turn'] = next_color(users_jso, map_jso)
         socketio.emit('fig_action', {'turn': map_jso['status']['turn']}, room=game.code)

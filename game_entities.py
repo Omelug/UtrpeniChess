@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import string
@@ -127,7 +128,7 @@ class Game:
                 break # player already have color
         else:
             if len(jso['colors']) == 0:
-                print("Game is full")
+                logging.error("Game is full")
                 return False
 
             if color is not None and color in jso['colors']:
